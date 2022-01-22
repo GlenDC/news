@@ -4,14 +4,14 @@ use actix_web::{middleware, web, App, HttpResponse, HttpServer, Result};
 use askama::Template;
 
 #[derive(Template)]
-#[template(path = "user.html")]
+#[template(path = "pages/user.html")]
 struct UserTemplate<'a> {
     name: &'a str,
     text: &'a str,
 }
 
 #[derive(Template)]
-#[template(path = "index.html")]
+#[template(path = "pages/index.html")]
 struct Index;
 
 async fn index(query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
