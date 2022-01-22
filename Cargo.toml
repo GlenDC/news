@@ -1,8 +1,15 @@
 [package]
-name = "news"
-version = "0.1.0"
+name = "news"  # TODO: define actual name
+version = "0.0.1"
+authors = ["Glen De Cauwsemaecker <glen@plabayo.tech>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+env_logger = "0.8"
+actix-web = "3"
+askama = "0.9"
+
+[build-dependencies]
+askama = "0.9"
