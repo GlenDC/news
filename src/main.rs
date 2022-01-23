@@ -114,6 +114,18 @@ struct PageNewsLocales{
 }
 
 #[derive(Template)]
+#[template(path = "pages/item.html")]
+struct PageItem<'a> {
+    site_info: SiteInfo,
+    q: &'a str,
+    i18n: PageItemLocales,
+}
+
+struct PageItemLocales{
+    site: SiteLocales,
+}
+
+#[derive(Template)]
 #[template(path = "pages/search.html")]
 struct PageSearch<'a> {
     site_info: SiteInfo,
@@ -161,6 +173,7 @@ async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::P
     match path.1.to_lowercase().as_str() {
         "news" => page_news(&locale, data).await,
         "search" => page_search(&locale, data, query).await,
+        "item" => page_item(&locale, data, query).await,
         DEFAULT_LOCALE => page_news(&locale, data).await,
         _ => page_unknown(&locale, data).await,
     }
@@ -170,6 +183,21 @@ async fn page_news(locale: &str, data: web::Data<SiteState>) -> Result<HttpRespo
     let s = PageNews {
         site_info: data.info,
         i18n: PageNewsLocales{
+            site: SiteLocales::new(locale),
+        },
+    }.render().unwrap();
+    Ok(HttpResponse::Ok().content_type("text/html").body(s))
+}
+
+async fn page_item(locale: &str, data: web::Data<SiteState>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
+    let q = match query.get("q") {
+        Some(s) => &s,
+        None => "",
+    };
+    let s = PageItem {
+        site_info: data.info,
+        q: q,
+        i18n: PageItemLocales{
             site: SiteLocales::new(locale),
         },
     }.render().unwrap();
