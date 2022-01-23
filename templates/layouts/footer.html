@@ -2,29 +2,29 @@
     <nav>
         <ul>
             <li>
-                <a href="/guidelines">{{ i18n.site.nav.footer.guidelines }}</a>
+                <a href="/{{ i18n.site.locale }}/guidelines">{{ i18n.site.nav.footer.guidelines }}</a>
             </li>
             <li>
-                <a href="/faq">{{ i18n.site.nav.footer.faq }}</a>
+                <a href="/{{ i18n.site.locale }}/faq">{{ i18n.site.nav.footer.faq }}</a>
             </li>
             <li>
-                <a href="/lists">{{ i18n.site.nav.footer.lists }}</a>
+                <a href="/{{ i18n.site.locale }}/lists">{{ i18n.site.nav.footer.lists }}</a>
             </li>
             <li>
-                <a href="/api">{{ i18n.site.nav.footer.api }}</a>
+                <a href="/{{ i18n.site.locale }}/api">{{ i18n.site.nav.footer.api }}</a>
             </li>
             <li>
-                <a href="/security">{{ i18n.site.nav.footer.security }}</a>
+                <a href="/{{ i18n.site.locale }}/security">{{ i18n.site.nav.footer.security }}</a>
             </li>
             <li>
-                <a href="/legal">{{ i18n.site.nav.footer.legal }}</a>
+                <a href="/{{ i18n.site.locale }}/legal">{{ i18n.site.nav.footer.legal }}</a>
             </li>
             <li>
                 <a href="mailto:pn@plabayo.tech">{{ i18n.site.nav.footer.contact }}</a>
             </li>
         </ul>
         <aside>
-            <form method="get" action="/search">
+            <form method="get" action="/{{ i18n.site.locale }}/search">
                 <label for="search">{{ i18n.site.nav.footer.search }}:</label>
                 <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
             </form>

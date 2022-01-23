@@ -1,0 +1,22 @@
+es:
+  site:
+    name: Noticias de Plabayo
+    nav:
+      header:
+        news: "noticias"
+        past: "pasada"
+        comments: "comentarios"
+        ask: "preguntar"
+        show: "mostrar"
+        events: "eventos"
+        submit: "entregar"
+        login: "acceso"
+      footer:
+        guidelines: "Directrices"
+        faq: "Preguntas más frecuentes"
+        lists: "liza"
+        api: "API"
+        security: "seguridad"
+        legal: "legal"
+        contact: "contacto"
+        search: "Buscar"

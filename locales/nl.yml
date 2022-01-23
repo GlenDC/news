@@ -1,0 +1,22 @@
+nl:
+  site:
+    name: Plabayo Nieuws
+    nav:
+      header:
+        news: "nieuws"
+        past: "verleden"
+        comments: "commentaren"
+        ask: "vraag"
+        show: "toon"
+        events: "evenementen"
+        submit: "deel"
+        login: "inloggen"
+      footer:
+        guidelines: "Richtlijnen"
+        faq: "FAQ"
+        lists: "lijsten"
+        api: "API"
+        security: "beveiliging"
+        legal: "beleid"
+        contact: "contact"
+        search: "Zoek"
