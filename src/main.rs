@@ -29,10 +29,10 @@ struct SiteLocales {
 }
 
 impl SiteLocales {
-    pub fn new(locale: &str) -> SiteLocales {
+    pub fn new(locale: &str, param_locale: &str) -> SiteLocales {
         SiteLocales{
             name: t!("site.name", locale=locale),
-            locale: String::from(locale),
+            locale: String::from(param_locale),
             nav: NavLocales{
                 header: NavHeaderLocales{
                     news: t!("site.nav.header.news", locale=locale),
@@ -137,59 +137,73 @@ struct PageSearchLocales{
     site: SiteLocales,
 }
 
-async fn page_unknown(locale: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
+async fn page_unknown(locale: &str, param_locale: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
     let s = PageNotFound {
         site_info: data.info,
         i18n: PageNotFoundLocales{
-            site: SiteLocales::new(locale),
+            site: SiteLocales::new(locale, param_locale),
         },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 async fn page_home(data: web::Data<SiteState>) -> Result<HttpResponse> {
-    page_news(DEFAULT_LOCALE, data).await
+    // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+    page_news(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await
 }
 
 async fn page_home_with_locale_or_path(data: web::Data<SiteState>, path: web::Path<(String,)>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     match path.into_inner().0.to_lowercase().as_str() {
-        "news" => page_news(DEFAULT_LOCALE, data).await,
-        "search" => page_search(DEFAULT_LOCALE, data, query).await,
+        // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+        "news" => page_news(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await,
+        // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+        "search" => page_search(DEFAULT_LOCALE, DEFAULT_LOCALE, data, query).await,
+        "all" => {
+            // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+            // and set special flag somehow when fetching items to select all content
+            page_news(DEFAULT_LOCALE, "all", data).await
+        }
         locale => if ALL_LOCALES.iter().any(|v| v == &locale) {
-            page_news(locale, data).await
+            page_news(locale, locale, data).await
         } else {
-            page_unknown(DEFAULT_LOCALE, data).await
+            page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await
         },
     }
 }
 
 async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::Path<(String, String)>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     let path = path.into_inner();
-    let locale = path.0.to_lowercase();
-    if !ALL_LOCALES.iter().any(|v| v == &locale) {
+    let mut locale = path.0.to_lowercase();
+    let param_locale = locale.clone();
+    if locale == "all" {
+        // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+        // and set special flag somehow when fetching items to select all content
+        locale = String::from(DEFAULT_LOCALE);
+    } else if !ALL_LOCALES.iter().any(|v| v == &locale) {
+        // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
         // TODO: add suggestion related to locale?!
-        return page_unknown(DEFAULT_LOCALE, data).await;
+        return page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await;
     }
     match path.1.to_lowercase().as_str() {
-        "news" => page_news(&locale, data).await,
-        "search" => page_search(&locale, data, query).await,
-        "item" => page_item(&locale, data, query).await,
-        DEFAULT_LOCALE => page_news(&locale, data).await,
-        _ => page_unknown(&locale, data).await,
+        "news" => page_news(&locale, &param_locale, data).await,
+        "search" => page_search(&locale, &param_locale, data, query).await,
+        "item" => page_item(&locale, &param_locale, data, query).await,
+        DEFAULT_LOCALE => page_news(&locale, &param_locale, data).await,
+        _ => page_unknown(&locale, &param_locale, data).await,
     }
 }
 
-async fn page_news(locale: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
+async fn page_news(locale: &str, param_locale: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
     let s = PageNews {
         site_info: data.info,
         i18n: PageNewsLocales{
-            site: SiteLocales::new(locale),
+            site: SiteLocales::new(locale, param_locale),
         },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-async fn page_item(locale: &str, data: web::Data<SiteState>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
+async fn page_item(locale: &str, param_locale: &str, data: web::Data<SiteState>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     let q = match query.get("q") {
         Some(s) => &s,
         None => "",
@@ -198,13 +212,13 @@ async fn page_item(locale: &str, data: web::Data<SiteState>, query: web::Query<H
         site_info: data.info,
         q: q,
         i18n: PageItemLocales{
-            site: SiteLocales::new(locale),
+            site: SiteLocales::new(locale, param_locale),
         },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-async fn page_search(locale: &str, data: web::Data<SiteState>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
+async fn page_search(locale: &str, param_locale: &str, data: web::Data<SiteState>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     let q = match query.get("q") {
         Some(s) => &s,
         None => "",
@@ -213,7 +227,7 @@ async fn page_search(locale: &str, data: web::Data<SiteState>, query: web::Query
         site_info: data.info,
         q: q,
         i18n: PageSearchLocales{
-            site: SiteLocales::new(locale),
+            site: SiteLocales::new(locale, param_locale),
         },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -242,7 +256,8 @@ async fn main() -> std::io::Result<()> {
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))
-                    .to(move || page_unknown(DEFAULT_LOCALE, Data::new(SiteState {
+                    // TODO: replace with path trail one and use unknown path with clean error :)
+                    .to(move || page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, Data::new(SiteState {
                         info: site_info.clone(),
                     }))),
             )
