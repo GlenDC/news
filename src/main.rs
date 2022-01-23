@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use actix_files as fs;
-use actix_web::{middleware, web, App, HttpResponse, HttpServer, Result};
+use actix_web::{middleware, web, guard, App, HttpResponse, HttpServer, Result};
 use askama::Template;
 use fnv::FnvHasher;
 use std::hash::Hasher;
@@ -82,6 +82,17 @@ struct SiteInfo {
 }
 
 #[derive(Template)]
+#[template(path = "pages/not_found.html")]
+struct PageNotFound {
+    site_info: SiteInfo,
+    i18n: PageNotFoundLocales,
+}
+
+struct PageNotFoundLocales{
+    site: SiteLocales,
+}
+
+#[derive(Template)]
 #[template(path = "pages/index.html")]
 struct PageNews {
     site_info: SiteInfo,
@@ -136,18 +147,32 @@ async fn main() -> std::io::Result<()> {
 
     // start http server
     HttpServer::new(move || {
+        let site_info = SiteInfo{
+            version: (|| -> u64 {
+                let timestamp_str = env!("VERGEN_BUILD_TIMESTAMP");
+                let mut hasher: FnvHasher = Default::default();
+                hasher.write(timestamp_str.as_bytes());
+                hasher.finish()
+            })(),
+        };
         App::new()
             .data(SiteState {
-                info: SiteInfo{
-                    version: (|| -> u64 {
-                        let timestamp_str = env!("VERGEN_BUILD_TIMESTAMP");
-                        let mut hasher: FnvHasher = Default::default();
-                        hasher.write(timestamp_str.as_bytes());
-                        hasher.finish()
-                    })(),
-                },
+                info: site_info.clone(),
             })
             .wrap(middleware::Logger::default())
+            .default_service(
+                web::route()
+                    .guard(guard::Not(guard::Get()))
+                    .to(move || {
+                        let s = PageNotFound {
+                            site_info: site_info,
+                            i18n: PageNotFoundLocales{
+                                site: SiteLocales::new(),
+                            },
+                        }.render().unwrap();
+                        HttpResponse::Ok().content_type("text/html").body(s)
+                    }),
+            )
             .service(fs::Files::new("/assets", "./assets").show_files_listing())
             .service(web::resource("/").route(web::get().to(page_news)))
             .service(web::resource("/news").route(web::get().to(page_news)))
