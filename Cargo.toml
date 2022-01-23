@@ -1,15 +1,21 @@
 [package]
-name = "news"  # TODO: define actual name
+name = "plabayo-news"
 version = "0.0.1"
 authors = ["Glen De Cauwsemaecker <glen@plabayo.tech>"]
 edition = "2021"
+build = "src/build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 env_logger = "0.8"
 actix-web = "3"
+actix-files = "0.5"
 askama = "0.9"
+anyhow = "1"
+fnv = "1"
 
 [build-dependencies]
 askama = "0.9"
+anyhow = "1"
+vergen = { version = "5", default-features = false, features = ["build"] }

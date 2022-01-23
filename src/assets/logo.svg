@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32mm"
+   height="32mm"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/Users/glendc/code/github.com/plabayo/news/assets/favicon.ico"
+   inkscape:export-xdpi="25.4"
+   inkscape:export-ydpi="25.4"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.52155154"
+     inkscape:cx="-399.76874"
+     inkscape:cy="126.5455"
+     inkscape:window-width="1293"
+     inkscape:window-height="701"
+     inkscape:window-x="94"
+     inkscape:window-y="69"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#f4d7d7;fill-opacity:1;stroke:none;stroke-width:0.499999;stroke-linecap:square;stroke-linejoin:round;paint-order:stroke markers fill"
+       id="rect24878"
+       width="32.282822"
+       height="32.388668"
+       x="0"
+       y="-0.10584532" />
+    <text
+       xml:space="preserve"
+       style="font-weight:500;font-size:42.9217px;line-height:1.25;font-family:'Fira Code';-inkscape-font-specification:'Fira Code Medium';stroke-width:0.223551"
+       x="-2.2972925"
+       y="31.286077"
+       id="text1508"><tspan
+         sodipodi:role="line"
+         id="tspan1506"
+         style="font-size:42.9217px;fill:#800000;stroke-width:0.223551"
+         x="-2.2972925"
+         y="31.286077">P</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:500;font-size:20.6626px;line-height:1.25;font-family:'Fira Code';-inkscape-font-specification:'Fira Code Medium';stroke-width:0.516566"
+       x="18.994291"
+       y="31.224371"
+       id="text9374"><tspan
+         sodipodi:role="line"
+         id="tspan9372"
+         style="fill:#800000;fill-opacity:1;stroke-width:0.516566"
+         x="18.994291"
+         y="31.224371">n</tspan></text>
+  </g>
+</svg>
