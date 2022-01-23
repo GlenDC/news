@@ -5,9 +5,75 @@ use actix_web::{middleware, web, App, HttpResponse, HttpServer, Result};
 use askama::Template;
 use fnv::FnvHasher;
 use std::hash::Hasher;
+use rust_i18n::{t, i18n};
+
+// init yaml-based translations
+i18n!("locales");
 
 struct SiteState {
     info: SiteInfo,
+}
+
+struct SiteLocales {
+    name: String,
+    nav: NavLocales,
+}
+
+impl SiteLocales {
+    pub fn new() -> SiteLocales {
+        SiteLocales{
+            name: t!("site.name"),
+            nav: NavLocales{
+                header: NavHeaderLocales{
+                    news: t!("site.nav.header.news"),
+                    past: t!("site.nav.header.past"),
+                    comments: t!("site.nav.header.comments"),
+                    ask: t!("site.nav.header.ask"),
+                    show: t!("site.nav.header.show"),
+                    events: t!("site.nav.header.events"),
+                    submit: t!("site.nav.header.submit"),
+                    login: t!("site.nav.header.login"),
+                },
+                footer: NavFooterLocales{
+                    guidelines: t!("site.nav.footer.guidelines"),
+                    faq: t!("site.nav.footer.faq"),
+                    lists: t!("site.nav.footer.lists"),
+                    api: t!("site.nav.footer.api"),
+                    security: t!("site.nav.footer.security"),
+                    legal: t!("site.nav.footer.legal"),
+                    contact: t!("site.nav.footer.contact"),
+                    search: t!("site.nav.footer.search"),
+                },
+            },
+        }
+    }
+}
+
+struct NavLocales {
+    header: NavHeaderLocales,
+    footer: NavFooterLocales,
+}
+
+struct NavHeaderLocales {
+    news: String,
+    past: String,
+    comments: String,
+    ask: String,
+    show: String,
+    events: String,
+    submit: String,
+    login: String,
+}
+
+struct NavFooterLocales {
+    guidelines: String,
+    faq: String,
+    lists: String,
+    api: String,
+    security: String,
+    legal: String,
+    contact: String,
+    search: String,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -19,6 +85,11 @@ struct SiteInfo {
 #[template(path = "pages/index.html")]
 struct PageNews {
     site_info: SiteInfo,
+    i18n: PageNewsLocales,
+}
+
+struct PageNewsLocales{
+    site: SiteLocales,
 }
 
 #[derive(Template)]
@@ -26,11 +97,19 @@ struct PageNews {
 struct PageSearch<'a> {
     site_info: SiteInfo,
     q: &'a str,
+    i18n: PageSearchLocales,
+}
+
+struct PageSearchLocales{
+    site: SiteLocales,
 }
 
 async fn page_news(data: web::Data<SiteState>) -> Result<HttpResponse> {
     let s = PageNews {
         site_info: data.info,
+        i18n: PageNewsLocales{
+            site: SiteLocales::new(),
+        },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
@@ -43,6 +122,9 @@ async fn page_search(data: web::Data<SiteState>, query: web::Query<HashMap<Strin
     let s = PageSearch {
         site_info: data.info,
         q: q,
+        i18n: PageSearchLocales{
+            site: SiteLocales::new(),
+        },
     }.render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }

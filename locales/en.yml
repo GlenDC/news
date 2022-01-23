@@ -1,0 +1,22 @@
+en:
+  site:
+    name: Plabayo News
+    nav:
+      header:
+        news: "news"
+        past: "past"
+        comments: "comments"
+        ask: "ask"
+        show: "show"
+        events: "events"
+        submit: "submit"
+        login: "login"
+      footer:
+        guidelines: "Guidelines"
+        faq: "FAQ"
+        lists: "lists"
+        api: "API"
+        security: "security"
+        legal: "legal"
+        contact: "contact"
+        search: "Search"
