@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
 use actix_files as fs;
-use actix_web::{middleware, web, guard, App, HttpResponse, HttpServer, Result};
-use actix_web::web::Data;
+use actix_web::{middleware, web, App, HttpResponse, HttpServer, Result};
 use askama::Template;
 use fnv::FnvHasher;
 use std::hash::Hasher;
@@ -171,7 +170,7 @@ async fn page_home_with_locale_or_path(data: web::Data<SiteState>, path: web::Pa
     }
 }
 
-async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::Path<(String, String)>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
+async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::Path<(String, String, String)>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     let path = path.into_inner();
     let mut locale = path.0.to_lowercase();
     let param_locale = locale.clone();
@@ -183,6 +182,11 @@ async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::P
         // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
         // TODO: add suggestion related to locale?!
         return page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await;
+    }
+    if !path.2.is_empty() {
+        // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
+        // TODO: add suggestion related to path?!
+        return page_unknown(&locale, &param_locale, data).await;
     }
     match path.1.to_lowercase().as_str() {
         "news" => page_news(&locale, &param_locale, data).await,
@@ -250,25 +254,13 @@ async fn main() -> std::io::Result<()> {
         };
         App::new()
             .data(SiteState {
-                info: site_info.clone(),
+                info: site_info,
             })
             .wrap(middleware::Logger::default())
-            .default_service(
-                web::route()
-                    .guard(guard::Not(guard::Get()))
-                    // TODO: replace with path trail one and use unknown path with clean error :)
-                    .to(move || page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, Data::new(SiteState {
-                        info: site_info.clone(),
-                    }))),
-            )
             .service(fs::Files::new("/assets", "./assets").show_files_listing())
             .service(web::resource("/").route(web::get().to(page_home)))
             .service(web::resource("/{locale_or_page}").route(web::get().to(page_home_with_locale_or_path)))
-            .service(web::resource("/{locale}/{page}").route(web::get().to(page_home_with_locale_and_path)))
-            /*
-            .service(web::resource("/news").route(web::get().to(page_news)))
-            .service(web::resource("/search").route(web::get().to(page_search)))
-            */
+            .service(web::resource("/{locale}/{page}{tail:.*}").route(web::get().to(page_home_with_locale_and_path)))
     })
     .bind("127.0.0.1:8080")?
     .run()
