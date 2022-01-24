@@ -13,7 +13,8 @@ load-path = "locales"
 [dependencies]
 env_logger = "0.8"
 actix-web = "3"
-actix-files = "0.5"
+actix-web-static-files = "3"
+static-files = "0.2"
 askama = "0.9"
 anyhow = "1"
 fnv = "1"
@@ -21,6 +22,7 @@ lazy_static = "1.4.0"
 rust-i18n = "0"
 
 [build-dependencies]
+actix-web-static-files = "3"
 askama = "0.9"
 anyhow = "1"
 vergen = { version = "5", default-features = false, features = ["build"] }

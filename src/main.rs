@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
-use actix_files as fs;
 use actix_web::{middleware, web, App, HttpResponse, HttpServer, Result};
+use actix_web::http::StatusCode;
+use actix_web_static_files;
 use askama::Template;
 use fnv::FnvHasher;
 use std::hash::Hasher;
@@ -9,6 +10,9 @@ use rust_i18n::{t, i18n};
 
 // init yaml-based translations
 i18n!("locales");
+
+// include generated (assets) resource files
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 const DEFAULT_LOCALE: &'static str = "en";
 const ALL_LOCALES: &'static [&'static str] = &[
@@ -161,7 +165,8 @@ async fn page_home_with_locale_or_path(data: web::Data<SiteState>, path: web::Pa
             // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
             // and set special flag somehow when fetching items to select all content
             page_news(DEFAULT_LOCALE, "all", data).await
-        }
+        },
+        "assets" => Ok(HttpResponse::new(StatusCode::NOT_FOUND)),
         locale => if ALL_LOCALES.iter().any(|v| v == &locale) {
             page_news(locale, locale, data).await
         } else {
@@ -173,6 +178,12 @@ async fn page_home_with_locale_or_path(data: web::Data<SiteState>, path: web::Pa
 async fn page_home_with_locale_and_path(data: web::Data<SiteState>, path: web::Path<(String, String, String)>, query: web::Query<HashMap<String, String>>) -> Result<HttpResponse> {
     let path = path.into_inner();
     let mut locale = path.0.to_lowercase();
+
+    if locale == "assets" {
+        // handle the case where a source is not found
+        return Ok(HttpResponse::new(StatusCode::NOT_FOUND));
+    }
+
     let param_locale = locale.clone();
     if locale == "all" {
         // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
@@ -244,6 +255,7 @@ async fn main() -> std::io::Result<()> {
 
     // start http server
     HttpServer::new(move || {
+        let generated = generate();
         let site_info = SiteInfo{
             version: (|| -> u64 {
                 let timestamp_str = env!("VERGEN_BUILD_TIMESTAMP");
@@ -257,7 +269,7 @@ async fn main() -> std::io::Result<()> {
                 info: site_info,
             })
             .wrap(middleware::Logger::default())
-            .service(fs::Files::new("/assets", "./assets").show_files_listing())
+            .service(actix_web_static_files::ResourceFiles::new("/assets", generated))
             .service(web::resource("/").route(web::get().to(page_home)))
             .service(web::resource("/{locale_or_page}").route(web::get().to(page_home_with_locale_or_path)))
             .service(web::resource("/{locale}/{page}{tail:.*}").route(web::get().to(page_home_with_locale_and_path)))
