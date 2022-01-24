@@ -15,9 +15,10 @@ nl:
         guidelines: "Richtlijnen"
         faq: "FAQ"
         api: "API"
-        security: "beveiliging"
-        legal: "beleid"
-        contact: "contact"
+        security: "Beveiliging"
+        legal: "Beleid"
+        source_code: "Broncode"
+        contact: "Contact"
         search: "Zoek"
   page:
     security:

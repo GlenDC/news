@@ -15,9 +15,10 @@ es:
         guidelines: "Directrices"
         faq: "Preguntas más frecuentes"
         api: "API"
-        security: "seguridad"
-        legal: "legal"
-        contact: "contacto"
+        security: "Seguridad"
+        legal: "Legal"
+        source_code: "Código fuente"
+        contact: "Contacto"
         search: "Buscar"
   page:
     security:

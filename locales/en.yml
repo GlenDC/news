@@ -15,9 +15,10 @@ en:
         guidelines: "Guidelines"
         faq: "FAQ"
         api: "API"
-        security: "security"
-        legal: "legal"
-        contact: "contact"
+        security: "Security"
+        legal: "Legal"
+        source_code: "Source code"
+        contact: "Contact"
         search: "Search"
   page:
     security:

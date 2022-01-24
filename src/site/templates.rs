@@ -2,6 +2,7 @@ use crate::site::l18n;
 
 pub struct SiteLocales {
     name: String,
+    repository: String,
     locale: String,
     nav: NavLocales,
 }
@@ -10,6 +11,7 @@ impl SiteLocales {
     pub fn new(locale: &str, param_locale: &str) -> SiteLocales {
         SiteLocales {
             name: l18n::txt("site.name", locale),
+            repository: String::from("https://github.com/plabayo/news"),
             locale: String::from(param_locale),
             nav: NavLocales {
                 header: NavHeaderLocales {
@@ -28,6 +30,7 @@ impl SiteLocales {
                     api: l18n::txt("site.nav.footer.api", locale),
                     security: l18n::txt("site.nav.footer.security", locale),
                     legal: l18n::txt("site.nav.footer.legal", locale),
+                    source_code: l18n::txt("site.nav.footer.source_code", locale),
                     contact: l18n::txt("site.nav.footer.contact", locale),
                     search: l18n::txt("site.nav.footer.search", locale),
                 },
@@ -58,6 +61,7 @@ struct NavFooterLocales {
     api: String,
     security: String,
     legal: String,
+    source_code: String,
     contact: String,
     search: String,
 }
