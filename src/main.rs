@@ -268,6 +268,7 @@ async fn main() -> std::io::Result<()> {
             })
             .wrap(middleware::Logger::default())
             .wrap(middleware::NormalizePath::new(middleware::normalize::TrailingSlash::Trim))
+            .wrap(middleware::Compress::default())
             .service(actix_web_static_files::ResourceFiles::new("/assets", generated))
             .service(web::resource("/").route(web::get().to(page_home)))
             .service(web::resource("/{locale_or_page}").route(web::get().to(page_home_with_locale_or_path)))
