@@ -19,3 +19,13 @@ en:
         legal: "legal"
         contact: "contact"
         search: "Search"
+  page:
+    security:
+      intro: >
+        # Plabayo News Security
+
+        If you find a security hole, please let us know at [security@plabayo.tech](mailto:security@plabayo.tech).
+
+        We try to respond (with fixes!) as soon as possible, and really appreciate the help.
+      reports: >
+        No security holes have been disclosed to us.

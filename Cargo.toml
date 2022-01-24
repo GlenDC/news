@@ -1,5 +1,5 @@
 [package]
-name = "plabayo-news"
+name = "plabayo_news"
 version = "0.0.1"
 authors = ["Glen De Cauwsemaecker <glen@plabayo.tech>"]
 edition = "2021"
@@ -11,18 +11,19 @@ default-locale = "en"
 load-path = "locales"
 
 [dependencies]
-env_logger = "0.8"
+env_logger = "0"
 actix-web = "3"
 actix-web-static-files = "3"
-static-files = "0.2"
-askama = "0.9"
+static-files = "0"
+askama = "0"
 anyhow = "1"
 fnv = "1"
-lazy_static = "1.4.0"
+lazy_static = "1"
 rust-i18n = "0"
+pulldown-cmark = "0"
 
 [build-dependencies]
 actix-web-static-files = "3"
-askama = "0.9"
+askama = "0"
 anyhow = "1"
 vergen = { version = "5", default-features = false, features = ["build"] }

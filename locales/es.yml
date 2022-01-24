@@ -19,3 +19,7 @@ es:
         legal: "legal"
         contact: "contacto"
         search: "Buscar"
+  page:
+    security:
+      intro: "**TODO**(`page.security.intro`)"
+      reports: "**TODO**(`page.security.reports`)"
