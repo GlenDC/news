@@ -50,7 +50,6 @@ impl SiteLocales {
                 footer: NavFooterLocales{
                     guidelines: t!("site.nav.footer.guidelines", locale=locale),
                     faq: t!("site.nav.footer.faq", locale=locale),
-                    lists: t!("site.nav.footer.lists", locale=locale),
                     api: t!("site.nav.footer.api", locale=locale),
                     security: t!("site.nav.footer.security", locale=locale),
                     legal: t!("site.nav.footer.legal", locale=locale),
@@ -81,7 +80,6 @@ struct NavHeaderLocales {
 struct NavFooterLocales {
     guidelines: String,
     faq: String,
-    lists: String,
     api: String,
     security: String,
     legal: String,
