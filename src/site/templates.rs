@@ -131,7 +131,12 @@ pub mod pages {
     }
 
     impl<'a> Item<'a> {
-        pub fn new(locale: &str, param_locale: &str, info: SiteInfo, params: &'a HashMap<String, String>) -> Item<'a> {
+        pub fn new(
+            locale: &str,
+            param_locale: &str,
+            info: SiteInfo,
+            params: &'a HashMap<String, String>,
+        ) -> Item<'a> {
             let q = match params.get("q") {
                 Some(s) => &s,
                 None => "",
@@ -159,7 +164,12 @@ pub mod pages {
     }
 
     impl<'a> Search<'a> {
-        pub fn new(locale: &str, param_locale: &str, info: SiteInfo, params: &'a HashMap<String, String>) -> Search<'a> {
+        pub fn new(
+            locale: &str,
+            param_locale: &str,
+            info: SiteInfo,
+            params: &'a HashMap<String, String>,
+        ) -> Search<'a> {
             let q = match params.get("q") {
                 Some(s) => &s,
                 None => "",

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use askama::Template;
 use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, Result};
+use askama::Template;
 
 use crate::site::state::SiteState;
 use crate::site::templates::pages;

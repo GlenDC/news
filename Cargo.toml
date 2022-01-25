@@ -8,7 +8,7 @@ build = "src/build.rs"
 [package.metadata.i18n]
 available-locales = ["en"]
 default-locale = "en"
-load-path = "locales"
+load-path = "site/locales"
 
 [dependencies]
 env_logger = "0"

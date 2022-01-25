@@ -7,7 +7,7 @@ fn main() -> Result<()> {
   vergen(Config::default())?;
   // Bundle static resources so we can serve these from memory,
   // and make the setup of the news web server easier.
-  resource_dir("./assets").build()?;
+  resource_dir("./site/assets").build()?;
   // All good.
   Ok(())
 }

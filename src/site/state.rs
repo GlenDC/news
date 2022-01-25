@@ -16,7 +16,7 @@ impl SiteState {
                 hasher.finish()
             })(),
         };
-        SiteState{ info }
+        SiteState { info }
     }
 }
 
