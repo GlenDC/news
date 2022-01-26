@@ -20,6 +20,7 @@ en:
         source_code: "Source code"
         contact: "Contact"
         search: "Search"
+        build_info: "Server Build Information"
   page:
     security:
       intro: >

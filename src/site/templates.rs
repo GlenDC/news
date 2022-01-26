@@ -33,6 +33,7 @@ impl SiteLocales {
                     source_code: l18n::txt("site.nav.footer.source_code", locale),
                     contact: l18n::txt("site.nav.footer.contact", locale),
                     search: l18n::txt("site.nav.footer.search", locale),
+                    build_info: l18n::txt("site.nav.footer.build_info", locale),
                 },
             },
         }
@@ -64,6 +65,7 @@ struct NavFooterLocales {
     source_code: String,
     contact: String,
     search: String,
+    build_info: String,
 }
 
 pub mod pages {
@@ -76,13 +78,13 @@ pub mod pages {
 
     #[derive(Template)]
     #[template(path = "pages/not_found.html")]
-    pub struct NotFound {
-        site_info: SiteInfo,
+    pub struct NotFound<'a> {
+        site_info: &'a SiteInfo,
         i18n: NotFoundLocales,
     }
 
-    impl NotFound {
-        pub fn new(locale: &str, param_locale: &str, info: SiteInfo) -> NotFound {
+    impl<'a> NotFound<'a> {
+        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> NotFound<'a> {
             NotFound {
                 site_info: info,
                 i18n: NotFoundLocales {
@@ -98,13 +100,13 @@ pub mod pages {
 
     #[derive(Template)]
     #[template(path = "pages/index.html")]
-    pub struct News {
-        site_info: SiteInfo,
+    pub struct News<'a> {
+        site_info: &'a SiteInfo,
         i18n: NewsLocales,
     }
 
-    impl News {
-        pub fn new(locale: &str, param_locale: &str, info: SiteInfo) -> News {
+    impl<'a> News<'a> {
+        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> News<'a> {
             News {
                 site_info: info,
                 i18n: NewsLocales {
@@ -121,7 +123,7 @@ pub mod pages {
     #[derive(Template)]
     #[template(path = "pages/item.html")]
     pub struct Item<'a> {
-        site_info: SiteInfo,
+        site_info: &'a SiteInfo,
         q: &'a str,
         i18n: ItemLocales,
     }
@@ -134,7 +136,7 @@ pub mod pages {
         pub fn new(
             locale: &str,
             param_locale: &str,
-            info: SiteInfo,
+            info: &'a SiteInfo,
             params: &'a HashMap<String, String>,
         ) -> Item<'a> {
             let q = match params.get("q") {
@@ -154,7 +156,7 @@ pub mod pages {
     #[derive(Template)]
     #[template(path = "pages/search.html")]
     pub struct Search<'a> {
-        site_info: SiteInfo,
+        site_info: &'a SiteInfo,
         q: &'a str,
         i18n: SearchLocales,
     }
@@ -167,7 +169,7 @@ pub mod pages {
         pub fn new(
             locale: &str,
             param_locale: &str,
-            info: SiteInfo,
+            info: &'a SiteInfo,
             params: &'a HashMap<String, String>,
         ) -> Search<'a> {
             let q = match params.get("q") {
@@ -186,8 +188,8 @@ pub mod pages {
 
     #[derive(Template)]
     #[template(path = "pages/security.html", escape = "none")]
-    pub struct Security {
-        site_info: SiteInfo,
+    pub struct Security<'a> {
+        site_info: &'a SiteInfo,
         i18n: SecurityLocales,
     }
 
@@ -197,8 +199,8 @@ pub mod pages {
         reports: String,
     }
 
-    impl Security {
-        pub fn new(locale: &str, param_locale: &str, info: SiteInfo) -> Security {
+    impl<'a> Security<'a> {
+        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> Security<'a> {
             Security {
                 site_info: info,
                 i18n: SecurityLocales {

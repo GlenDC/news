@@ -20,6 +20,7 @@ nl:
         source_code: "Broncode"
         contact: "Contact"
         search: "Zoek"
+        build_info: "TODO(Server Build Information)"
   page:
     security:
       intro: >

@@ -20,6 +20,7 @@ es:
         source_code: "Código fuente"
         contact: "Contacto"
         search: "Buscar"
+        build_info: "TODO(Server Build Information)"
   page:
     security:
       intro: "**TODO**(`page.security.intro`)"

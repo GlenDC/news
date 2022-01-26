@@ -88,7 +88,7 @@ async fn page_unknown(
     param_locale: &str,
     data: web::Data<SiteState>,
 ) -> Result<HttpResponse> {
-    let s = pages::NotFound::new(locale, param_locale, data.info)
+    let s = pages::NotFound::new(locale, param_locale, &data.info)
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -99,7 +99,7 @@ async fn page_news(
     param_locale: &str,
     data: web::Data<SiteState>,
 ) -> Result<HttpResponse> {
-    let s = pages::News::new(locale, param_locale, data.info)
+    let s = pages::News::new(locale, param_locale, &data.info)
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -111,7 +111,7 @@ async fn page_item(
     data: web::Data<SiteState>,
     query: web::Query<HashMap<String, String>>,
 ) -> Result<HttpResponse> {
-    let s = pages::Item::new(locale, param_locale, data.info, &query.into_inner())
+    let s = pages::Item::new(locale, param_locale, &data.info, &query.into_inner())
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -123,7 +123,7 @@ async fn page_search(
     data: web::Data<SiteState>,
     query: web::Query<HashMap<String, String>>,
 ) -> Result<HttpResponse> {
-    let s = pages::Search::new(locale, param_locale, data.info, &query.into_inner())
+    let s = pages::Search::new(locale, param_locale, &data.info, &query.into_inner())
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -134,7 +134,7 @@ async fn page_security(
     param_locale: &str,
     data: web::Data<SiteState>,
 ) -> Result<HttpResponse> {
-    let s = pages::Security::new(locale, param_locale, data.info)
+    let s = pages::Security::new(locale, param_locale, &data.info)
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))

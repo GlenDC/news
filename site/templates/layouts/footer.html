@@ -23,11 +23,16 @@
                 <a href="mailto:pn@plabayo.tech">{{ i18n.site.nav.footer.contact }}</a>
             </li>
         </ul>
-        <aside>
-            <form method="get" action="/{{ i18n.site.locale }}/search">
-                <label for="search">{{ i18n.site.nav.footer.search }}:</label>
-                <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
-            </form>
-        </aside>
+        <div>
+            <div>
+                <form method="get" action="/{{ i18n.site.locale }}/search">
+                    <label for="search">{{ i18n.site.nav.footer.search }}:</label>
+                    <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
+                </form>
+            </div>
+            <div>
+                {{ i18n.site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
+            </div>
+        </div>
     </nav>
 </footer>
