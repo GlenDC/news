@@ -1,33 +1,49 @@
 <header>
-    <a href="/{{ i18n.site.locale }}"><h1>{{ i18n.site.name }}</h1></a>
+    <a href="/?locale={{ i18n.site.locale }}"><h1>{{ i18n.site.name }}</h1></a>
     <nav>
         <ul>
             <li>
-                <a href="/{{ i18n.site.locale }}/news">{{ i18n.site.nav.header.news }}</a>
+                <a href="/news?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.news }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/past">{{ i18n.site.nav.header.past }}</a>
+                <a href="/past?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.past }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/comments">{{ i18n.site.nav.header.comments }}</a>
+                <a href="/comments?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.comments }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/ask">{{ i18n.site.nav.header.ask }}</a>
+                <a href="/ask?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.ask }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/show">{{ i18n.site.nav.header.show }}</a>
+                <a href="/show?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.show }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/events">{{ i18n.site.nav.header.events }}</a>
+                <a href="/event?locale={{ i18n.site.locale }}s">{{ i18n.site.nav.header.events }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/submit">{{ i18n.site.nav.header.submit }}</a>
+                <a href="/submit?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.submit }}</a>
             </li>
         </ul>
         <aside>
             <ul>
                 <li>
-                    <a href="/{{ i18n.site.locale }}/login">{{ i18n.site.nav.header.login }}</a>
+                    <a href="/login?locale={{ i18n.site.locale }}">{{ i18n.site.nav.header.login }}</a>
+                </li>
+                <li>
+                    <form method="get" action="{{ i18n.site.path }}" id="site_header_locale_form">
+                        <!-- TODO: also pop. other query parameters -->
+                        <label for="locale">{{ i18n.site.nav.header.locale }}:</label>
+                        <select name="locale" id="locale" form="site_header_locale_form">
+                        {% for (key, value) in i18n.site.locales %}
+                            {% if key.as_str() == i18n.site.locale %}
+                            <option value="{{ key }}" selected="selected">{{ value }}</option>
+                            {% else %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                        <input type="submit" value="{{ i18n.site.nav.header.select }}" class="select" />
+                    </form>
                 </li>
             </ul>
         </aside>

@@ -1,18 +1,28 @@
+use std::collections::BTreeMap;
+
 use crate::site::l18n;
 
 pub struct SiteLocales {
     name: String,
     repository: String,
     locale: String,
+    path: String,
+    locales: BTreeMap<String, String>,
     nav: NavLocales,
 }
 
 impl SiteLocales {
-    pub fn new(locale: &str, param_locale: &str) -> SiteLocales {
+    pub fn new(locale: &str, path: &str) -> SiteLocales {
+        let mut locales = BTreeMap::new();
+        for site_locale in l18n::SUPPORTED_LOCALES {
+            locales.insert(String::from(*site_locale), l18n::txt(format!("site.locales.{}", site_locale).as_str(), locale));
+        }
         SiteLocales {
             name: l18n::txt("site.name", locale),
             repository: String::from("https://github.com/plabayo/news"),
-            locale: String::from(param_locale),
+            locale: String::from(locale),
+            locales: locales,
+            path: String::from(path),
             nav: NavLocales {
                 header: NavHeaderLocales {
                     news: l18n::txt("site.nav.header.news", locale),
@@ -23,6 +33,8 @@ impl SiteLocales {
                     events: l18n::txt("site.nav.header.events", locale),
                     submit: l18n::txt("site.nav.header.submit", locale),
                     login: l18n::txt("site.nav.header.login", locale),
+                    locale: l18n::txt("site.nav.header.locale", locale),
+                    select: l18n::txt("site.nav.header.select", locale),
                 },
                 footer: NavFooterLocales {
                     guidelines: l18n::txt("site.nav.footer.guidelines", locale),
@@ -53,6 +65,8 @@ struct NavHeaderLocales {
     events: String,
     submit: String,
     login: String,
+    locale: String,
+    select: String,
 }
 
 struct NavFooterLocales {
@@ -82,11 +96,11 @@ pub mod pages {
     }
 
     impl<'a> NotFound<'a> {
-        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> NotFound<'a> {
+        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> NotFound<'a> {
             NotFound {
                 site_info: info,
                 i18n: NotFoundLocales {
-                    site: SiteLocales::new(locale, param_locale),
+                    site: SiteLocales::new(locale, path),
                 },
             }
         }
@@ -104,11 +118,11 @@ pub mod pages {
     }
 
     impl<'a> News<'a> {
-        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> News<'a> {
+        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> News<'a> {
             News {
                 site_info: info,
                 i18n: NewsLocales {
-                    site: SiteLocales::new(locale, param_locale),
+                    site: SiteLocales::new(locale, path),
                 },
             }
         }
@@ -133,7 +147,7 @@ pub mod pages {
     impl<'a> Item<'a> {
         pub fn new(
             locale: &str,
-            param_locale: &str,
+            path: &str,
             info: &'a SiteInfo,
             params: &'a HashMap<String, String>,
         ) -> Item<'a> {
@@ -145,7 +159,7 @@ pub mod pages {
                 site_info: info,
                 q: q,
                 i18n: ItemLocales {
-                    site: SiteLocales::new(locale, param_locale),
+                    site: SiteLocales::new(locale, path),
                 },
             }
         }
@@ -166,7 +180,7 @@ pub mod pages {
     impl<'a> Search<'a> {
         pub fn new(
             locale: &str,
-            param_locale: &str,
+            path: &str,
             info: &'a SiteInfo,
             params: &'a HashMap<String, String>,
         ) -> Search<'a> {
@@ -178,7 +192,7 @@ pub mod pages {
                 site_info: info,
                 q: q,
                 i18n: SearchLocales {
-                    site: SiteLocales::new(locale, param_locale),
+                    site: SiteLocales::new(locale, path),
                 },
             }
         }
@@ -198,11 +212,11 @@ pub mod pages {
     }
 
     impl<'a> Security<'a> {
-        pub fn new(locale: &str, param_locale: &str, info: &'a SiteInfo) -> Security<'a> {
+        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> Security<'a> {
             Security {
                 site_info: info,
                 i18n: SecurityLocales {
-                    site: SiteLocales::new(locale, param_locale),
+                    site: SiteLocales::new(locale, path),
                     intro: l18n::md("page.security.intro", locale),
                     reports: l18n::md("page.security.reports", locale),
                 },

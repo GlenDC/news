@@ -1,4 +1,4 @@
-use actix_web::{middleware, web, App, HttpServer};
+use actix_web::{middleware, App, HttpServer};
 
 use plabayo_news::site::{assets, pages};
 use plabayo_news::site::state::SiteState;
@@ -18,16 +18,7 @@ async fn main() -> std::io::Result<()> {
             ))
             .wrap(middleware::Compress::default())
             .service(assets::factory())
-            // TODO: replace with factory which will handle one function to rule them all
-            .service(web::resource("/").route(web::get().to(pages::page_home)))
-            .service(
-                web::resource("/{locale_or_page}")
-                    .route(web::get().to(pages::page_home_with_locale_or_path)),
-            )
-            .service(
-                web::resource("/{locale}/{page}{tail:.*}")
-                    .route(web::get().to(pages::page_home_with_locale_and_path)),
-            )
+            .service(pages::factory())
     })
     .bind("127.0.0.1:8888")?
     .run()

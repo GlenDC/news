@@ -1,6 +1,10 @@
 es:
   site:
     name: Noticias de Plabayo
+    locales:
+      en: "Inglés"
+      es: "Español"
+      nl: "Holandés"
     nav:
       header:
         news: "noticias"
@@ -11,6 +15,8 @@ es:
         events: "eventos"
         submit: "entregar"
         login: "acceso"
+        locale: "idioma"
+        select: "TODO(select)"
       footer:
         guidelines: "Directrices"
         faq: "Preguntas más frecuentes"

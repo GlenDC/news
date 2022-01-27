@@ -1,6 +1,10 @@
 en:
   site:
     name: Plabayo News
+    locales:
+      en: "English"
+      es: "Spanish"
+      nl: "Dutch"
     nav:
       header:
         news: "news"
@@ -11,6 +15,8 @@ en:
         events: "events"
         submit: "submit"
         login: "login"
+        locale: "language"
+        select: "select"
       footer:
         guidelines: "Guidelines"
         faq: "FAQ"

@@ -2,16 +2,16 @@
     <nav>
         <ul>
             <li>
-                <a href="/{{ i18n.site.locale }}/guidelines">{{ i18n.site.nav.footer.guidelines }}</a>
+                <a href="/guidelines?locale={{ i18n.site.locale }}">{{ i18n.site.nav.footer.guidelines }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/faq">{{ i18n.site.nav.footer.faq }}</a>
+                <a href="/faq?locale={{ i18n.site.locale }}">{{ i18n.site.nav.footer.faq }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/api">{{ i18n.site.nav.footer.api }}</a>
+                <a href="/api?locale={{ i18n.site.locale }}">{{ i18n.site.nav.footer.api }}</a>
             </li>
             <li>
-                <a href="/{{ i18n.site.locale }}/security">{{ i18n.site.nav.footer.security }}</a>
+                <a href="/security?locale={{ i18n.site.locale }}">{{ i18n.site.nav.footer.security }}</a>
             </li>
             <li>
                 <a href="{{ i18n.site.repository }}/blob/main/LEGAL.md">{{ i18n.site.nav.footer.legal }}</a>
@@ -22,9 +22,10 @@
         </ul>
         <div>
             <div>
-                <form method="get" action="/{{ i18n.site.locale }}/search">
+                <form method="get" action="/search">
                     <label for="search">{{ i18n.site.nav.footer.search }}:</label>
                     <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
+                    <input id="hidden" type="hidden" name="locale" value="{{ i18n.site.locale }}"/>
                 </form>
             </div>
             <div>
