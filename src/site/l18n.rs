@@ -1,12 +1,15 @@
+use pulldown_cmark::{html, Options, Parser};
 use rust_i18n::t;
-use pulldown_cmark::{Parser, Options, html};
+
+pub const DEFAULT_LOCALE: &'static str = "en";
+pub const SUPPORTED_LOCALES: &'static [&'static str] = &[DEFAULT_LOCALE, "nl", "es"];
 
 pub fn txt(path: &str, locale: &str) -> String {
-    t!(path, locale=locale)
+    t!(path, locale = locale)
 }
 
 pub fn md(path: &str, locale: &str) -> String {
-    let input = t!(path, locale=locale);
+    let input = t!(path, locale = locale);
 
     let mut options = Options::empty();
     options.insert(Options::ENABLE_STRIKETHROUGH);

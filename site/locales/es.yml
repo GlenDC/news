@@ -17,7 +17,6 @@ es:
         api: "API"
         security: "Seguridad"
         legal: "Legal"
-        source_code: "Código fuente"
         contact: "Contacto"
         search: "Buscar"
         build_info: "TODO(Server Build Information)"

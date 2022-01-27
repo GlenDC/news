@@ -17,7 +17,6 @@ nl:
         api: "API"
         security: "Beveiliging"
         legal: "Beleid"
-        source_code: "Broncode"
         contact: "Contact"
         search: "Zoek"
         build_info: "TODO(Server Build Information)"

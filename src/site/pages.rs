@@ -4,11 +4,9 @@ use actix_web::http::StatusCode;
 use actix_web::{web, HttpResponse, Result};
 use askama::Template;
 
+use crate::site::l18n::{DEFAULT_LOCALE, SUPPORTED_LOCALES};
 use crate::site::state::SiteState;
 use crate::site::templates::pages;
-
-const DEFAULT_LOCALE: &'static str = "en";
-const ALL_LOCALES: &'static [&'static str] = &[DEFAULT_LOCALE, "nl", "es"];
 
 pub async fn page_home(data: web::Data<SiteState>) -> Result<HttpResponse> {
     // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
@@ -36,7 +34,7 @@ pub async fn page_home_with_locale_or_path(
         }
         "assets" => Ok(HttpResponse::new(StatusCode::NOT_FOUND)),
         locale => {
-            if ALL_LOCALES.iter().any(|v| v == &locale) {
+            if SUPPORTED_LOCALES.iter().any(|v| v == &locale) {
                 page_news(locale, locale, data).await
             } else {
                 page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await
@@ -63,7 +61,7 @@ pub async fn page_home_with_locale_and_path(
         // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
         // and set special flag somehow when fetching items to select all content
         locale = String::from(DEFAULT_LOCALE);
-    } else if !ALL_LOCALES.iter().any(|v| v == &locale) {
+    } else if !SUPPORTED_LOCALES.iter().any(|v| v == &locale) {
         // TODO: respect [cookie > user > browser > fallback] order instead of hard coding
         // TODO: add suggestion related to locale?!
         return page_unknown(DEFAULT_LOCALE, DEFAULT_LOCALE, data).await;
