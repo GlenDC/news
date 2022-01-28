@@ -1,14 +1,18 @@
 [package]
-name = "plabayo_news_web"
+name = "plabayo-news-web"
 version = "0.0.1"
 authors = ["Glen De Cauwsemaecker <glen@plabayo.tech>"]
 edition = "2021"
-build = "src/build.rs"
+build = "./src/build.rs"
+
+[[bin]]
+name = "plabayo-news-web"
+path = "./src/main.rs"
 
 [package.metadata.i18n]
 available-locales = ["en"]
 default-locale = "en"
-load-path = "site/locales"
+load-path = "./site/locales"
 
 [dependencies]
 env_logger = "0"

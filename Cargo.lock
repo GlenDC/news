@@ -1404,7 +1404,7 @@ name = "plabayo-news-data"
 version = "0.1.0"
 
 [[package]]
-name = "plabayo_news_web"
+name = "plabayo-news-web"
 version = "0.0.1"
 dependencies = [
  "actix-web",
