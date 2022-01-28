@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
-use actix_web::{web, HttpResponse, Result};
 use actix_web::dev::HttpServiceFactory;
+use actix_web::{web, HttpResponse, Result};
 use askama::Template;
 
 use crate::site::l18n::{DEFAULT_LOCALE, SUPPORTED_LOCALES};
@@ -15,9 +15,9 @@ pub fn factory() -> impl HttpServiceFactory + 'static {
 async fn serve_page(
     data: web::Data<SiteState>,
     path: web::Path<(String,)>,
-    query: web::Query<HashMap<String, String>>,
+    query: web::Query<BTreeMap<String, String>>,
 ) -> Result<HttpResponse> {
-    let locale = match query.get("locale") {
+    let locale = match query.get("loc") {
         None => String::from(DEFAULT_LOCALE),
         Some(s) => {
             let s = s.to_lowercase();
@@ -26,36 +26,27 @@ async fn serve_page(
             } else {
                 String::from(DEFAULT_LOCALE)
             }
-        },
+        }
     };
     match path.into_inner().0.to_lowercase().as_str() {
         "" | "home" | "index" => page_news(&locale, "/", data).await,
         "new" | "news" => page_news(&locale, "/news", data).await,
-        "search" => page_search(&locale,"/search", data, query).await,
+        "search" => page_search(&locale, "/search", data, query).await,
         "security" => page_security(&locale, "/security", data).await,
         "item" => page_item(&locale, "/item", data, query).await,
         _ => page_unknown(&locale, data).await,
     }
 }
 
-async fn page_unknown(
-    locale: &str,
-    data: web::Data<SiteState>,
-) -> Result<HttpResponse> {
+async fn page_unknown(locale: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
     let s = pages::NotFound::new(locale, "/", &data.info)
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-async fn page_news(
-    locale: &str,
-    path: &str,
-    data: web::Data<SiteState>,
-) -> Result<HttpResponse> {
-    let s = pages::News::new(locale, path, &data.info)
-        .render()
-        .unwrap();
+async fn page_news(locale: &str, path: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
+    let s = pages::News::new(locale, path, &data.info).render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
@@ -63,7 +54,7 @@ async fn page_item(
     locale: &str,
     path: &str,
     data: web::Data<SiteState>,
-    query: web::Query<HashMap<String, String>>,
+    query: web::Query<BTreeMap<String, String>>,
 ) -> Result<HttpResponse> {
     let s = pages::Item::new(locale, path, &data.info, &query.into_inner())
         .render()
@@ -75,7 +66,7 @@ async fn page_search(
     locale: &str,
     path: &str,
     data: web::Data<SiteState>,
-    query: web::Query<HashMap<String, String>>,
+    query: web::Query<BTreeMap<String, String>>,
 ) -> Result<HttpResponse> {
     let s = pages::Search::new(locale, path, &data.info, &query.into_inner())
         .render()

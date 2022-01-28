@@ -7,12 +7,13 @@ pub struct SiteLocales {
     repository: String,
     locale: String,
     path: String,
+    query: Option<PageQuery>,
     locales: BTreeMap<String, String>,
     nav: NavLocales,
 }
 
 impl SiteLocales {
-    pub fn new(locale: &str, path: &str) -> SiteLocales {
+    pub fn new(locale: &str, path: &str, query: Option<BTreeMap<String, String>>) -> SiteLocales {
         let mut locales = BTreeMap::new();
         for site_locale in l18n::SUPPORTED_LOCALES {
             locales.insert(String::from(*site_locale), l18n::txt(format!("site.locales.{}", site_locale).as_str(), locale));
@@ -23,6 +24,7 @@ impl SiteLocales {
             locale: String::from(locale),
             locales: locales,
             path: String::from(path),
+            query: query.map(|params| PageQuery{ params }),
             nav: NavLocales {
                 header: NavHeaderLocales {
                     news: l18n::txt("site.nav.header.news", locale),
@@ -48,6 +50,45 @@ impl SiteLocales {
                 },
             },
         }
+    }
+    
+    pub fn params_for(&self, path: &str) -> BTreeMap<&str, &str> {
+        let mut params = BTreeMap::new();
+        params.insert("loc", self.locale.as_str());
+        if self.path == path {
+            if let Some(query) = self.query.as_ref() {
+                for (key, value) in query.params.iter() {
+                    params.insert(key.as_str(), value.as_str());
+                }
+            }
+        }
+        params
+    }
+    
+    pub fn params_current(&self, with_locale: bool) -> BTreeMap<&str, &str> {
+        let mut params = BTreeMap::new();
+        if with_locale {
+            params.insert("loc", self.locale.as_str());
+        }
+        if let Some(query) = self.query.as_ref() {
+            for (key, value) in query.params.iter() {
+                params.insert(key.as_str(), value.as_str());
+            }
+        }
+        params
+    }
+
+    pub fn page_query_for(&self, path: &str) -> String {
+        let params = self.params_for(path);
+        let mut params_iter = params.iter();
+        let mut s = match params_iter.next() {
+            None => return String::from(""),
+            Some((key, value)) => format!("?{}={}", key, value),
+        };
+        for (key, value) in params_iter {
+            s.push_str(format!("?{}={}", key, value).as_str());
+        }
+        s
     }
 }
 
@@ -80,8 +121,12 @@ struct NavFooterLocales {
     build_info: String,
 }
 
+struct PageQuery {
+    params: BTreeMap<String, String>,
+}
+
 pub mod pages {
-    use std::collections::HashMap;
+    use std::collections::BTreeMap;
 
     use askama::Template;
 
@@ -100,7 +145,7 @@ pub mod pages {
             NotFound {
                 site_info: info,
                 i18n: NotFoundLocales {
-                    site: SiteLocales::new(locale, path),
+                    site: SiteLocales::new(locale, path, None),
                 },
             }
         }
@@ -122,7 +167,7 @@ pub mod pages {
             News {
                 site_info: info,
                 i18n: NewsLocales {
-                    site: SiteLocales::new(locale, path),
+                    site: SiteLocales::new(locale, path, None),
                 },
             }
         }
@@ -149,17 +194,19 @@ pub mod pages {
             locale: &str,
             path: &str,
             info: &'a SiteInfo,
-            params: &'a HashMap<String, String>,
+            params: &'a BTreeMap<String, String>,
         ) -> Item<'a> {
             let q = match params.get("q") {
                 Some(s) => &s,
                 None => "",
             };
+            let mut query: BTreeMap<String, String> = BTreeMap::new();
+            query.insert(String::from("q"), String::from(q));
             Item {
                 site_info: info,
                 q: q,
                 i18n: ItemLocales {
-                    site: SiteLocales::new(locale, path),
+                    site: SiteLocales::new(locale, path, Some(query)),
                 },
             }
         }
@@ -182,17 +229,19 @@ pub mod pages {
             locale: &str,
             path: &str,
             info: &'a SiteInfo,
-            params: &'a HashMap<String, String>,
+            params: &'a BTreeMap<String, String>,
         ) -> Search<'a> {
             let q = match params.get("q") {
                 Some(s) => &s,
                 None => "",
             };
+            let mut query: BTreeMap<String, String> = BTreeMap::new();
+            query.insert(String::from("q"), String::from(q));
             Search {
                 site_info: info,
                 q: q,
                 i18n: SearchLocales {
-                    site: SiteLocales::new(locale, path),
+                    site: SiteLocales::new(locale, path, Some(query)),
                 },
             }
         }
@@ -216,7 +265,7 @@ pub mod pages {
             Security {
                 site_info: info,
                 i18n: SecurityLocales {
-                    site: SiteLocales::new(locale, path),
+                    site: SiteLocales::new(locale, path, None),
                     intro: l18n::md("page.security.intro", locale),
                     reports: l18n::md("page.security.reports", locale),
                 },
