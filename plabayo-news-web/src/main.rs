@@ -1,7 +1,7 @@
 use actix_web::{middleware, App, HttpServer};
 
-use plabayo_news::site::{assets, pages};
-use plabayo_news::site::state::SiteState;
+use plabayo_news_web::site::{assets, pages};
+use plabayo_news_web::site::state::SiteState;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
