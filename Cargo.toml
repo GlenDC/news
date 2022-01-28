@@ -2,4 +2,9 @@
 
 members = [
     "plabayo-news-web",
+    "plabayo-news-data",
+    "plabayo-news-api",
+]
+default-members = [
+    "plabayo-news-web",
 ]
