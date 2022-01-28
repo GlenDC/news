@@ -1,14 +1,25 @@
-# 1: Build the exe
-FROM rust:1.58-alpine as builder
-WORKDIR /usr/src
+FROM rust:1.58.1-slim-buster as builder
 
-RUN USER=root cargo new --bin plabayo-news-web
-WORKDIR /usr/src/plabayo-news-web
-COPY plabayo-news-web/ ./
+# copy files from this directory '.' to '/var/www'
+ADD ./plabayo-news-web /var/www
+
+# set cwd for RUN and CMD
+WORKDIR /var/www
+
+# might need to install some other libs to get your build done
+RUN apt-get update && apt-get -y install pkg-config libssl-dev
+
+RUN cargo fetch
+
+# build server
 RUN cargo build --release
 
-# 2: Copy the exe and extra files ("static") to an empty Docker image
+
+################
+# second stage #
 FROM scratch
-COPY --from=builder /usr/src/plabayo-news-web/target/release/plabayo-news-web .
-USER 1000
-CMD ["./plabayo-news-web"]
+
+COPY --from=builder /var/www/target/release/plabayo-news-web .
+
+# run the app
+ENTRYPOINT ["./plabayo-news-web"]
