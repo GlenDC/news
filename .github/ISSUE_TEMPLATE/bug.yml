@@ -1,0 +1,73 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - glendc
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description:  |
+        How can we get in touch with you if we need more info?
+        You can leave this empty if you wish to converse directly via the comment
+        section of this bug report instead.
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: |
+        Also tell us, what did you expect to happen?
+        Please provide sufficient details. In case you're running the server yourself, you can provide a stand-alone snippet that could
+        be greatly as well. Is the issue linked to a specific version or platform?
+        Or in case you are using the platform (website or API) as a user, describe the steps you took and what pages/endpoints you visited.
+      placeholder: Fill in all the info in as much detail as relevant here.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running? In case you are using the website as a user you can see the version in the footer.
+      options:
+        - main (latest)
+        - v0.0.1
+    validations:
+      required: true
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: What platform are you seeing the problem on?
+      multiple: true
+      options:
+        - Windows
+        - MacOS
+        - Linux
+        - BSD
+        - Other
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: |
+        Please copy and paste any relevant log output.
+        This will be automatically formatted into code, so no need for back ticks.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: |
+        By submitting this issue, you agree to follow our
+        [Code of Conduct](https://github.com/plabayo/news/blob/main/CONTRIBUTING.md#contributor-code-of-conduct)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
