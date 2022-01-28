@@ -2,29 +2,44 @@ use std::collections::BTreeMap;
 
 use crate::site::l18n;
 
-pub struct SiteLocales {
+pub struct SiteLocales<'a> {
     name: String,
-    repository: String,
-    locale: String,
-    path: String,
-    query: Option<PageQuery>,
-    locales: BTreeMap<String, String>,
+    repository: &'a str,
+    locale: &'a str,
+    path: &'a str,
+    query: Option<PageQuery<'a>>,
+    locales: BTreeMap<&'a str, LocaleInfo>,
     nav: NavLocales,
 }
 
-impl SiteLocales {
-    pub fn new(locale: &str, path: &str, query: Option<BTreeMap<String, String>>) -> SiteLocales {
+pub struct LocaleInfo {
+    name: String,
+    active: bool,
+}
+
+impl<'a> SiteLocales<'a> {
+    pub fn new(
+        locale: &'a str,
+        path: &'a str,
+        query: Option<BTreeMap<&'a str, &'a str>>,
+    ) -> SiteLocales<'a> {
         let mut locales = BTreeMap::new();
         for site_locale in l18n::SUPPORTED_LOCALES {
-            locales.insert(String::from(*site_locale), l18n::txt(format!("site.locales.{}", site_locale).as_str(), locale));
+            locales.insert(
+                *site_locale,
+                LocaleInfo {
+                    name: l18n::txt(format!("site.locales.{}", site_locale).as_str(), locale),
+                    active: (*site_locale) == locale,
+                },
+            );
         }
         SiteLocales {
             name: l18n::txt("site.name", locale),
-            repository: String::from("https://github.com/plabayo/news"),
-            locale: String::from(locale),
+            repository: "https://github.com/plabayo/news",
+            locale: locale,
             locales: locales,
-            path: String::from(path),
-            query: query.map(|params| PageQuery{ params }),
+            path: path,
+            query: query.map(|params| PageQuery { params }),
             nav: NavLocales {
                 header: NavHeaderLocales {
                     news: l18n::txt("site.nav.header.news", locale),
@@ -51,35 +66,31 @@ impl SiteLocales {
             },
         }
     }
-    
-    pub fn params_for(&self, path: &str) -> BTreeMap<&str, &str> {
+    pub fn params_for(&self, path: &str, ignore: &str) -> BTreeMap<&str, &str> {
+        let params_to_ignore: Vec<&str> = ignore.split("&").collect();
         let mut params = BTreeMap::new();
-        params.insert("loc", self.locale.as_str());
+        if !params_to_ignore.contains(&"loc") {
+            params.insert("loc", self.locale);
+        }
         if self.path == path {
             if let Some(query) = self.query.as_ref() {
-                for (key, value) in query.params.iter() {
-                    params.insert(key.as_str(), value.as_str());
+                for (key, value) in query
+                    .params
+                    .iter()
+                    .filter(|(k, _)| !params_to_ignore.contains(k))
+                {
+                    params.insert(key, value);
                 }
             }
         }
         params
     }
-    
-    pub fn params_current(&self, with_locale: bool) -> BTreeMap<&str, &str> {
-        let mut params = BTreeMap::new();
-        if with_locale {
-            params.insert("loc", self.locale.as_str());
-        }
-        if let Some(query) = self.query.as_ref() {
-            for (key, value) in query.params.iter() {
-                params.insert(key.as_str(), value.as_str());
-            }
-        }
-        params
+    pub fn params_current(&self, ignore: &str) -> BTreeMap<&str, &str> {
+        self.params_for(self.path, ignore)
     }
 
-    pub fn page_query_for(&self, path: &str) -> String {
-        let params = self.params_for(path);
+    pub fn page_query_for(&self, path: &str, ignore: &str) -> String {
+        let params = self.params_for(path, ignore);
         let mut params_iter = params.iter();
         let mut s = match params_iter.next() {
             None => return String::from(""),
@@ -121,8 +132,8 @@ struct NavFooterLocales {
     build_info: String,
 }
 
-struct PageQuery {
-    params: BTreeMap<String, String>,
+struct PageQuery<'a> {
+    params: BTreeMap<&'a str, &'a str>,
 }
 
 pub mod pages {
@@ -137,11 +148,11 @@ pub mod pages {
     #[template(path = "pages/not_found.html")]
     pub struct NotFound<'a> {
         site_info: &'a SiteInfo,
-        i18n: NotFoundLocales,
+        i18n: NotFoundLocales<'a>,
     }
 
     impl<'a> NotFound<'a> {
-        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> NotFound<'a> {
+        pub fn new(locale: &'a str, path: &'a str, info: &'a SiteInfo) -> NotFound<'a> {
             NotFound {
                 site_info: info,
                 i18n: NotFoundLocales {
@@ -151,19 +162,19 @@ pub mod pages {
         }
     }
 
-    struct NotFoundLocales {
-        site: SiteLocales,
+    struct NotFoundLocales<'a> {
+        site: SiteLocales<'a>,
     }
 
     #[derive(Template)]
     #[template(path = "pages/index.html")]
     pub struct News<'a> {
         site_info: &'a SiteInfo,
-        i18n: NewsLocales,
+        i18n: NewsLocales<'a>,
     }
 
     impl<'a> News<'a> {
-        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> News<'a> {
+        pub fn new(locale: &'a str, path: &'a str, info: &'a SiteInfo) -> News<'a> {
             News {
                 site_info: info,
                 i18n: NewsLocales {
@@ -173,8 +184,8 @@ pub mod pages {
         }
     }
 
-    struct NewsLocales {
-        site: SiteLocales,
+    struct NewsLocales<'a> {
+        site: SiteLocales<'a>,
     }
 
     #[derive(Template)]
@@ -182,17 +193,17 @@ pub mod pages {
     pub struct Item<'a> {
         site_info: &'a SiteInfo,
         q: &'a str,
-        i18n: ItemLocales,
+        i18n: ItemLocales<'a>,
     }
 
-    struct ItemLocales {
-        site: SiteLocales,
+    struct ItemLocales<'a> {
+        site: SiteLocales<'a>,
     }
 
     impl<'a> Item<'a> {
         pub fn new(
-            locale: &str,
-            path: &str,
+            locale: &'a str,
+            path: &'a str,
             info: &'a SiteInfo,
             params: &'a BTreeMap<String, String>,
         ) -> Item<'a> {
@@ -200,8 +211,8 @@ pub mod pages {
                 Some(s) => &s,
                 None => "",
             };
-            let mut query: BTreeMap<String, String> = BTreeMap::new();
-            query.insert(String::from("q"), String::from(q));
+            let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
+            query.insert("q", q);
             Item {
                 site_info: info,
                 q: q,
@@ -217,17 +228,17 @@ pub mod pages {
     pub struct Search<'a> {
         site_info: &'a SiteInfo,
         q: &'a str,
-        i18n: SearchLocales,
+        i18n: SearchLocales<'a>,
     }
 
-    struct SearchLocales {
-        site: SiteLocales,
+    struct SearchLocales<'a> {
+        site: SiteLocales<'a>,
     }
 
     impl<'a> Search<'a> {
         pub fn new(
-            locale: &str,
-            path: &str,
+            locale: &'a str,
+            path: &'a str,
             info: &'a SiteInfo,
             params: &'a BTreeMap<String, String>,
         ) -> Search<'a> {
@@ -235,8 +246,8 @@ pub mod pages {
                 Some(s) => &s,
                 None => "",
             };
-            let mut query: BTreeMap<String, String> = BTreeMap::new();
-            query.insert(String::from("q"), String::from(q));
+            let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
+            query.insert("q", q);
             Search {
                 site_info: info,
                 q: q,
@@ -251,17 +262,17 @@ pub mod pages {
     #[template(path = "pages/security.html", escape = "none")]
     pub struct Security<'a> {
         site_info: &'a SiteInfo,
-        i18n: SecurityLocales,
+        i18n: SecurityLocales<'a>,
     }
 
-    struct SecurityLocales {
-        site: SiteLocales,
+    struct SecurityLocales<'a> {
+        site: SiteLocales<'a>,
         intro: String,
         reports: String,
     }
 
     impl<'a> Security<'a> {
-        pub fn new(locale: &str, path: &str, info: &'a SiteInfo) -> Security<'a> {
+        pub fn new(locale: &'a str, path: &'a str, info: &'a SiteInfo) -> Security<'a> {
             Security {
                 site_info: info,
                 i18n: SecurityLocales {

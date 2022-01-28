@@ -25,7 +25,7 @@
                 <form method="get" action="/search">
                     <label for="search">{{ i18n.site.nav.footer.search }}:</label>
                     <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
-                    {% for (key, value) in i18n.site.params_for("/search") %}
+                    {% for (key, value) in i18n.site.params_for("/search", "q") %}
                     <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
                     {% endfor %}
                 </form>
