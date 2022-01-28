@@ -1,8 +1,8 @@
 use pulldown_cmark::{html, Options, Parser};
 use rust_i18n::t;
 
-pub const DEFAULT_LOCALE: &'static str = "en";
-pub const SUPPORTED_LOCALES: &'static [&'static str] = &[DEFAULT_LOCALE, "nl", "es"];
+pub const DEFAULT_LOCALE: &str = "en";
+pub const SUPPORTED_LOCALES: &[&str] = &[DEFAULT_LOCALE, "nl", "es"];
 
 pub fn txt(path: &str, locale: &str) -> String {
     t!(path, locale = locale)

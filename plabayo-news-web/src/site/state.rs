@@ -10,21 +10,27 @@ impl SiteState {
     pub fn new() -> SiteState {
         let build_timestamp = env!("VERGEN_BUILD_TIMESTAMP");
         let build_semver = env!("VERGEN_BUILD_SEMVER");
-        let build_date = build_timestamp.split("T").next().unwrap();
+        let build_date = build_timestamp.split('T').next().unwrap();
         let git_sha = env!("VERGEN_GIT_SHA");
         let git_sha_short = git_sha.chars().take(8).collect::<String>();
         let info = SiteInfo {
-            version: (|| -> u64 {
+            version: {
                 let mut hasher: FnvHasher = Default::default();
                 hasher.write(build_timestamp.as_bytes());
                 hasher.finish()
-            })(),
+            },
             build_date,
             build_semver,
             git_sha,
             git_sha_short,
         };
         SiteState { info }
+    }
+}
+
+impl Default for SiteState {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

@@ -36,9 +36,9 @@ impl<'a> SiteLocales<'a> {
         SiteLocales {
             name: l18n::txt("site.name", locale),
             repository: "https://github.com/plabayo/news",
-            locale: locale,
-            locales: locales,
-            path: path,
+            locale,
+            locales,
+            path,
             query: query.map(|params| PageQuery { params }),
             nav: NavLocales {
                 header: NavHeaderLocales {
@@ -67,7 +67,7 @@ impl<'a> SiteLocales<'a> {
         }
     }
     pub fn params_for(&self, path: &str, ignore: &str) -> BTreeMap<&str, &str> {
-        let params_to_ignore: Vec<&str> = ignore.split("&").collect();
+        let params_to_ignore: Vec<&str> = ignore.split('&').collect();
         let mut params = BTreeMap::new();
         if !params_to_ignore.contains(&"loc") {
             params.insert("loc", self.locale);
@@ -208,14 +208,14 @@ pub mod pages {
             params: &'a BTreeMap<String, String>,
         ) -> Item<'a> {
             let q = match params.get("q") {
-                Some(s) => &s,
+                Some(s) => s,
                 None => "",
             };
             let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
             query.insert("q", q);
             Item {
                 site_info: info,
-                q: q,
+                q,
                 i18n: ItemLocales {
                     site: SiteLocales::new(locale, path, Some(query)),
                 },
@@ -243,14 +243,14 @@ pub mod pages {
             params: &'a BTreeMap<String, String>,
         ) -> Search<'a> {
             let q = match params.get("q") {
-                Some(s) => &s,
+                Some(s) => s,
                 None => "",
             };
             let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
             query.insert("q", q);
             Search {
                 site_info: info,
-                q: q,
+                q,
                 i18n: SearchLocales {
                     site: SiteLocales::new(locale, path, Some(query)),
                 },
