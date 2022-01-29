@@ -1,27 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends "layouts/base.html" %}
 
-<head>
-    {% include "layouts/head.html" %}
-
-    <title>{{ i18n.site.name }}</title>
-</head>
-
-<body>
-    <div id="wrapper">
-        {% include "layouts/header.html" %}
-        <main class="mdgen">
-            <article>
-                <header>
-                    {{ i18n.intro }}
-                </header>
-                <section>
-                    {{ i18n.reports }}
-                </section>
-            </article>
-        </main>
-        {% include "layouts/footer.html" %}
-    </div>
-</body>
-
-</html>
+{% block content %}
+<article>
+    <header>
+        {{ i18n.intro }}
+    </header>
+    <section>
+        {{ i18n.reports }}
+    </section>
+</article>
+{% endblock %}

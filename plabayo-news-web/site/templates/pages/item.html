@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html>
+{% extends "layouts/base.html" %}
 
-    <head>
-        {% include "layouts/head.html" %}
-
-        <title>{{ i18n.site.name }}</title>
-    </head>
-
-    <body>
-        <div id="wrapper">
-            {% include "layouts/header.html" %}
-            <main>
-                <p>
-                    Item "<strong>{{ q }}</strong>" not found.
-                </p>
-            </main>
-            {% include "layouts/footer.html" %}
-        </div>
-    </body>
-
-</html>
+{% block content %}
+<p>
+    Item "<strong>{{ q }}</strong>" not found.
+</p>
+{% endblock %}
