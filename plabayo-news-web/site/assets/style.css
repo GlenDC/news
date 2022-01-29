@@ -1,21 +1,36 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
 body {
-    color: #222;
-    background: #fff;
-    font: 100% system-ui;
+    background: #FFEBEE;
+
+    font: 16px system-ui;
+    font-family: sans-serif;
+    color: #2e2d2d;
+
+    width: 100%;
+    -webkit-text-size-adjust: none;
 }
 
 a {
-    color: #0033cc;
+    color: #000000;
 }
 
-nav ul {
-    display: flex;
-    justify-content: space-between;
+a:link {
+    color: #000000;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #828282;
+    text-decoration: none;
 }
 
 #wrapper {
     display: grid;
-    gap: 20px;
     grid-template-areas:
         "header"
         "content"
@@ -24,6 +39,38 @@ nav ul {
 
 header {
     grid-area: header;
+    background: #FFCDD2;
+    color: #110004;
+    padding: 15px;
+}
+
+header a {
+    color: #110004;
+    text-decoration: none;
+}
+
+header a:visited {
+    color: #110004;
+}
+
+header a:hover {
+    color: #110004;
+}
+
+header nav {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+header ul {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+header li {
+    position: relative;
+    display: block;
+    width: auto;
 }
 
 main {
@@ -32,9 +79,17 @@ main {
 
 footer {
     grid-area: footer;
+    background: #FFCDD2;
+    padding: 10px;
 }
 
-/* @media (min-width: 500px) {
+@media only screen and (min-width : 300px) and (max-width : 750px) {
+    #wrapper {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* @media (min-width: 500px) {
 }
 
 @media (prefers-color-scheme: dark) {
