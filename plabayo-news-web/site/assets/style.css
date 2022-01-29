@@ -3,8 +3,38 @@ body {
     background: #fff;
     font: 100% system-ui;
 }
+
 a {
     color: #0033cc;
+}
+
+nav ul {
+    display: flex;
+    justify-content: space-between;
+}
+
+#wrapper {
+    display: grid;
+    gap: 20px;
+    grid-template-areas:
+        "header"
+        "content"
+        "footer";
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: content;
+}
+
+footer {
+    grid-area: footer;
+}
+
+/* @media (min-width: 500px) {
 }
 
 @media (prefers-color-scheme: dark) {
@@ -12,8 +42,8 @@ a {
         color: #eee;
         background: #121212;
     }
-    
+
     body a {
         color: #809fff;
     }
-}
+} */
