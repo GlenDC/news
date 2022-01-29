@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
             .service(assets::factory())
             .service(pages::factory())
     })
-    .bind("127.0.0.1:8888")?
+    .bind("0.0.0.0:8888")?
     .run()
     .await
 }
