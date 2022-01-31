@@ -1,33 +1,31 @@
 <header>
-    <nav class="nav-left">
-        <div class="nav-title">
-            <a href="/{{ i18n.site.page_query_for("/news", "") }}"><h1>{{ i18n.site.name }}</h1></a>
-        </div>
-        <div class="nav-pages">
-            <ul>
-                <li>
-                    <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
-                </li>
-                <li>
-                    <a href="/past{{ i18n.site.page_query_for("/past", "") }}">{{ i18n.site.nav.header.past }}</a>
-                </li>
-                <li>
-                    <a href="/comments{{ i18n.site.page_query_for("/comments", "") }}">{{ i18n.site.nav.header.comments }}</a>
-                </li>
-                <li>
-                    <a href="/ask{{ i18n.site.page_query_for("/ask", "") }}">{{ i18n.site.nav.header.ask }}</a>
-                </li>
-                <li>
-                    <a href="/show{{ i18n.site.page_query_for("/show", "") }}">{{ i18n.site.nav.header.show }}</a>
-                </li>
-                <li>
-                    <a href="/event{{ i18n.site.page_query_for("/events", "") }}">{{ i18n.site.nav.header.events }}</a>
-                </li>
-                <li>
-                    <a href="/submit{{ i18n.site.page_query_for("/submit", "") }}">{{ i18n.site.nav.header.submit }}</a>
-                </li>
-            </ul>
-        </div>
+    <nav id="site-nav-main" class="nav-left">
+        <h1 class="nav-title">
+            <a href="/{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.name }}</a>
+        </h1>
+        <ul class="nav-pages">
+            <li>
+                <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
+            </li>
+            <li>
+                <a href="/past{{ i18n.site.page_query_for("/past", "") }}">{{ i18n.site.nav.header.past }}</a>
+            </li>
+            <li>
+                <a href="/comments{{ i18n.site.page_query_for("/comments", "") }}">{{ i18n.site.nav.header.comments }}</a>
+            </li>
+            <li>
+                <a href="/ask{{ i18n.site.page_query_for("/ask", "") }}">{{ i18n.site.nav.header.ask }}</a>
+            </li>
+            <li>
+                <a href="/show{{ i18n.site.page_query_for("/show", "") }}">{{ i18n.site.nav.header.show }}</a>
+            </li>
+            <li>
+                <a href="/event{{ i18n.site.page_query_for("/events", "") }}">{{ i18n.site.nav.header.events }}</a>
+            </li>
+            <li>
+                <a href="/submit{{ i18n.site.page_query_for("/submit", "") }}">{{ i18n.site.nav.header.submit }}</a>
+            </li>
+        </ul>
     </nav>
     <nav class="nav-right">
         <ul>

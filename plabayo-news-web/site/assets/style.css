@@ -25,6 +25,27 @@ body {
     padding: 20px;
 }
 
+.wrapper>header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#site-nav-main {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
 .wrapper>main {
     padding: 20px;
+}
+
+.wrapper>footer>nav {
+    display: grid;
+    grid-auto-flow: row;
+    gap: 4px;
+    align-items: center;
+    justify-items: center;
 }
