@@ -1,38 +1,38 @@
 <footer>
     <nav>
-        <ul>
-            <li>
-                <a href="/guidelines?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.guidelines }}</a>
-            </li>
-            <li>
-                <a href="/faq?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.faq }}</a>
-            </li>
-            <li>
-                <a href="/api?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.api }}</a>
-            </li>
-            <li>
-                <a href="/security?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.security }}</a>
-            </li>
-            <li>
-                <a href="{{ i18n.site.repository }}/blob/main/LEGAL.md">{{ i18n.site.nav.footer.legal }}</a>
-            </li>
-            <li>
-                <a href="mailto:pn@plabayo.tech">{{ i18n.site.nav.footer.contact }}</a>
-            </li>
-        </ul>
-        <div>
-            <div>
-                <form method="get" action="/search">
-                    <label for="search">{{ i18n.site.nav.footer.search }}:</label>
-                    <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
-                    {% for (key, value) in i18n.site.params_for("/search", "q") %}
-                    <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
-                    {% endfor %}
-                </form>
-            </div>
-            <div>
-                {{ i18n.site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
-            </div>
+        <div class="nav-foot-first">
+            {{ i18n.site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
+        </div>
+        <div class="nav-foot-second">
+            <ul>
+                <li>
+                    <a href="/guidelines?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.guidelines }}</a>
+                </li>
+                <li>
+                    <a href="/faq?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.faq }}</a>
+                </li>
+                <li>
+                    <a href="/api?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.api }}</a>
+                </li>
+                <li>
+                    <a href="/security?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.security }}</a>
+                </li>
+                <li>
+                    <a href="{{ i18n.site.repository }}/blob/main/LEGAL.md">{{ i18n.site.nav.footer.legal }}</a>
+                </li>
+                <li>
+                    <a href="mailto:pn@plabayo.tech">{{ i18n.site.nav.footer.contact }}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-foot-third">
+            <form method="get" action="/search">
+                <label for="search">{{ i18n.site.nav.footer.search }}:</label>
+                <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
+                {% for (key, value) in i18n.site.params_for("/search", "q") %}
+                <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
+                {% endfor %}
+            </form>
         </div>
     </nav>
 </footer>

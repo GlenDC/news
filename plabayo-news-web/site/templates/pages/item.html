@@ -1,7 +1,16 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<p>
-    Item "<strong>{{ q }}</strong>" not found.
-</p>
+<div class="post-meta">
+    {% include "layouts/post_summary.html" %}
+</div>
+<div class="post-comment-new">
+    <form>
+        <textarea></textarea>
+        <button>add comment</button>
+    </form>
+</div>
+<div class="post-comments">
+    <p>You gotta search for q: "{{ q }}"</p>
+</div>
 {% endblock %}

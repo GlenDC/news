@@ -1,9 +1,9 @@
 <header>
-    <nav>
-        <header>
+    <nav class="nav-left">
+        <div class="nav-title">
             <a href="/{{ i18n.site.page_query_for("/news", "") }}"><h1>{{ i18n.site.name }}</h1></a>
-        </header>
-        <main>
+        </div>
+        <div class="nav-pages">
             <ul>
                 <li>
                     <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
@@ -27,32 +27,31 @@
                     <a href="/submit{{ i18n.site.page_query_for("/submit", "") }}">{{ i18n.site.nav.header.submit }}</a>
                 </li>
             </ul>
-        </main>
-        <aside>
-            <ul>
-                <li>
-                    <a href="/login{{ i18n.site.page_query_for("/login", "") }}">{{ i18n.site.nav.header.login }}</a>
-                </li>
-                <li>
-                    <form method="get" action="{{ i18n.site.path }}" id="site_header_locale_form">
-                        <!-- TODO: also pop. other query parameters -->
-                        <label for="locale">{{ i18n.site.nav.header.locale }}:</label>
-                        <select name="loc" id="locale" form="site_header_locale_form">
-                        {% for (locale, locale_info) in i18n.site.locales %}
-                            {% if locale_info.active %}
-                            <option value="{{ locale }}" selected="selected">{{ locale_info.name }}</option>
-                            {% else %}
-                            <option value="{{ locale }}">{{ locale_info.name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                        </select>
-                        {% for (key, value) in i18n.site.params_current("loc") %}
-                        <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
-                        {% endfor %}
-                        <input type="submit" value="{{ i18n.site.nav.header.select }}" class="select" />
-                    </form>
-                </li>
-            </ul>
-        </aside>
+        </div>
+    </nav>
+    <nav class="nav-right">
+        <ul>
+            <li>
+                <a href="/login{{ i18n.site.page_query_for("/login", "") }}">{{ i18n.site.nav.header.login }}</a>
+            </li>
+            <li>
+                <form method="get" action="{{ i18n.site.path }}" id="site_header_locale_form">
+                    <label for="locale">{{ i18n.site.nav.header.locale }}:</label>
+                    <select name="loc" id="locale" form="site_header_locale_form">
+                    {% for (locale, locale_info) in i18n.site.locales %}
+                        {% if locale_info.active %}
+                        <option value="{{ locale }}" selected="selected">{{ locale_info.name }}</option>
+                        {% else %}
+                        <option value="{{ locale }}">{{ locale_info.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    {% for (key, value) in i18n.site.params_current("loc") %}
+                    <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
+                    {% endfor %}
+                    <input type="submit" value="{{ i18n.site.nav.header.select }}" class="select" />
+                </form>
+            </li>
+        </ul>
     </nav>
 </header>
