@@ -1,0 +1,30 @@
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100%;
+    font: 1.2em / sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+* {
+    box-sizing: inherit;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.wrapper>header,
+.wrapper>footer {
+    padding: 20px;
+}
+
+.wrapper>main {
+    padding: 20px;
+}
