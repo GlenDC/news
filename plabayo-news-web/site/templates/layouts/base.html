@@ -10,10 +10,12 @@
     </head>
 
     <body>
-        <div class="wrapper">
+        <div id="wrapper">
             {% include "layouts/header.html" %}
             <main>
-                {% block content %}{% endblock %}
+                <div id="wrapper-content">
+                    {% block content %}{% endblock %}
+                </div>
             </main>
             {% include "layouts/footer.html" %}
         </div>

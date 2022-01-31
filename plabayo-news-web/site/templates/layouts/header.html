@@ -1,9 +1,9 @@
 <header>
-    <nav id="site-nav-main" class="nav-left">
+    <nav id="site-nav-main">
         <h1 class="nav-title">
             <a href="/{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.name }}</a>
         </h1>
-        <ul class="nav-pages">
+        <ul class="nav-buttons">
             <li>
                 <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
             </li>
@@ -27,11 +27,12 @@
             </li>
         </ul>
     </nav>
-    <nav class="nav-right">
-        <ul>
+    <nav id="site-nav-user">
+        <ul class="nav-buttons">
             <li>
                 <a href="/login{{ i18n.site.page_query_for("/login", "") }}">{{ i18n.site.nav.header.login }}</a>
             </li>
+            <!-- TODO: enable again once we figure out how to use and style it
             <li>
                 <form method="get" action="{{ i18n.site.path }}" id="site_header_locale_form">
                     <label for="locale">{{ i18n.site.nav.header.locale }}:</label>
@@ -50,6 +51,7 @@
                     <input type="submit" value="{{ i18n.site.nav.header.select }}" class="select" />
                 </form>
             </li>
+            -->
         </ul>
     </nav>
 </header>

@@ -1,10 +1,10 @@
 <footer>
-    <nav>
-        <div class="nav-foot-first">
+    <nav id="nav-footer">
+        <div id="nav-footer-info">
             {{ i18n.site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
         </div>
-        <div class="nav-foot-second">
-            <ul>
+        <div id="nav-footer-buttons">
+            <ul class="nav-buttons">
                 <li>
                     <a href="/guidelines?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.guidelines }}</a>
                 </li>
@@ -25,7 +25,7 @@
                 </li>
             </ul>
         </div>
-        <div class="nav-foot-third">
+        <div id="nav-footer-search">
             <form method="get" action="/search">
                 <label for="search">{{ i18n.site.nav.footer.search }}:</label>
                 <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
