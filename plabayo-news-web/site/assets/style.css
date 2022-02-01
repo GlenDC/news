@@ -27,7 +27,7 @@ body {
 @media screen and (max-width: 650px) {
     #wrapper-content {
         max-width: 100%;
-        margin: 10px;
+        margin: 0 10px;
     }
 }
 
@@ -136,10 +136,6 @@ nav .selected a {
     border-color: #1A1C20;
 }
 
-.clr-primary-bg-alt {
-    background-color: #fde4e0;
-}
-
 .clr-primary a {
     color: #1A1C20;
 }
@@ -150,6 +146,27 @@ nav .selected a {
 
 .clr-primary a:visited {
     color: #1A1C20;
+}
+
+.clr-primary-fg-alt {
+    color: #5d5858;
+    border-color: #5d5858;
+}
+
+.clr-primary-fg-alt a {
+    color: #5d5858;
+}
+
+.clr-primary-fg-alt a:hover {
+    color: #5d5858;
+}
+
+.clr-primary-fg-alt a:visited {
+    color: #5d5858;
+}
+
+.clr-primary-bg-alt {
+    background-color: #fde4e0;
 }
 
 .clr-secondary {
@@ -167,4 +184,29 @@ nav .selected a {
 
 .clr-secondary a:visited {
     color: #F4F4F4;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    row-gap: 10px;
+}
+
+.post-title h2 {
+    display: inline;
+    margin-right: 3px;
+    font-size: 1.2em;
+}
+
+.post-info {
+    font-size: 0.9em
+}
+
+.post header {
+    margin-bottom: 1px;
+}
+
+nav.posts-more {
+    margin-top: 20px;
 }
