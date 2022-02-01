@@ -11,8 +11,6 @@ en:
         past: "past"
         comments: "comments"
         ask: "ask"
-        show: "show"
-        events: "events"
         submit: "submit"
         login: "login"
         locale: "language"

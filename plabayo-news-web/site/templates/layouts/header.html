@@ -4,32 +4,26 @@
             <a href="/{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.name }}</a>
         </h1>
         <ul class="nav-buttons">
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/news") }}">
                 <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
             </li>
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/past") }}">
                 <a href="/past{{ i18n.site.page_query_for("/past", "") }}">{{ i18n.site.nav.header.past }}</a>
             </li>
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/comments") }}">
                 <a href="/comments{{ i18n.site.page_query_for("/comments", "") }}">{{ i18n.site.nav.header.comments }}</a>
             </li>
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/ask") }}">
                 <a href="/ask{{ i18n.site.page_query_for("/ask", "") }}">{{ i18n.site.nav.header.ask }}</a>
             </li>
-            <li>
-                <a href="/show{{ i18n.site.page_query_for("/show", "") }}">{{ i18n.site.nav.header.show }}</a>
-            </li>
-            <li>
-                <a href="/event{{ i18n.site.page_query_for("/events", "") }}">{{ i18n.site.nav.header.events }}</a>
-            </li>
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/submit") }}">
                 <a href="/submit{{ i18n.site.page_query_for("/submit", "") }}">{{ i18n.site.nav.header.submit }}</a>
             </li>
         </ul>
     </nav>
     <nav id="site-nav-user">
         <ul class="nav-buttons">
-            <li>
+            <li class="{{ i18n.site.class_nav_button_for("/login") }}">
                 <a href="/login{{ i18n.site.page_query_for("/login", "") }}">{{ i18n.site.nav.header.login }}</a>
             </li>
             <!-- TODO: enable again once we figure out how to use and style it

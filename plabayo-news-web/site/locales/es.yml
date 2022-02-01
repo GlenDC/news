@@ -11,8 +11,6 @@ es:
         past: "pasada"
         comments: "comentarios"
         ask: "preguntar"
-        show: "mostrar"
-        events: "eventos"
         submit: "entregar"
         login: "acceso"
         locale: "idioma"

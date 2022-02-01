@@ -109,6 +109,15 @@ nav a {
     text-decoration: none;
 }
 
+nav a:hover {
+    text-decoration: underline;
+}
+
+nav .selected a {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 #nav-footer-info {
     font-size: 0.8em;
 }

@@ -11,8 +11,6 @@ nl:
         past: "verleden"
         comments: "commentaren"
         ask: "vraag"
-        show: "toon"
-        events: "evenementen"
         submit: "deel"
         login: "inloggen"
         locale: "taal"

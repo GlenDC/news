@@ -46,8 +46,6 @@ impl<'a> SiteLocales<'a> {
                     past: l18n::txt("site.nav.header.past", locale),
                     comments: l18n::txt("site.nav.header.comments", locale),
                     ask: l18n::txt("site.nav.header.ask", locale),
-                    show: l18n::txt("site.nav.header.show", locale),
-                    events: l18n::txt("site.nav.header.events", locale),
                     submit: l18n::txt("site.nav.header.submit", locale),
                     login: l18n::txt("site.nav.header.login", locale),
                     locale: l18n::txt("site.nav.header.locale", locale),
@@ -101,6 +99,14 @@ impl<'a> SiteLocales<'a> {
         }
         s
     }
+
+    pub fn class_nav_button_for(&self, path: &str) -> &str {
+        if self.path == path {
+            "selected"
+        } else {
+            "unselected"
+        }
+    }
 }
 
 struct NavLocales {
@@ -113,8 +119,6 @@ struct NavHeaderLocales {
     past: String,
     comments: String,
     ask: String,
-    show: String,
-    events: String,
     submit: String,
     login: String,
     locale: String,
