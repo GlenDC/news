@@ -48,7 +48,6 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: lightgray;
     column-gap: 20px;
 }
 
@@ -120,4 +119,43 @@ nav a {
 
 #nav-footer-search {
     font-size: 1.1em;
+}
+
+.clr-primary {
+    background-color: #fdfafa;
+    color: #1A1C20;
+    border-color: #1A1C20;
+}
+
+.clr-primary-bg-alt {
+    background-color: #fde4e0;
+}
+
+.clr-primary a {
+    color: #1A1C20;
+}
+
+.clr-primary a:hover {
+    color: #1A1C20;
+}
+
+.clr-primary a:visited {
+    color: #1A1C20;
+}
+
+.clr-secondary {
+    color: #F4F4F4;
+    background-color: #900C3F;
+}
+
+.clr-secondary a {
+    color: #F4F4F4;
+}
+
+.clr-secondary a:hover {
+    color: #F4F4F4;
+}
+
+.clr-secondary a:visited {
+    color: #F4F4F4;
 }
