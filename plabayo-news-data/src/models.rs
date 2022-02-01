@@ -19,6 +19,10 @@ pub struct Item {
     /// and it will equal the .item sibling property's value
     /// in case the item was never modified after its creation.
     pub mod_time: SystemTime,
+    /// Amount of votes the item received,
+    /// items with negative votes get auto-flagged.
+    /// TODO: how to implement flagging?!?!
+    pub votes: i64,
     /// The HTML-formatted text in case of a comment or question,
     /// not defined in the case of a post.
     pub text: Option<String>,
