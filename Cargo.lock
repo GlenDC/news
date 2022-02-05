@@ -1397,7 +1397,18 @@ checksum = "58893f751c9b0412871a09abd62ecd2a00298c6c83befa223ef98c52aef40cbe"
 
 [[package]]
 name = "plabayo-news-api"
-version = "0.1.0"
+version = "0.0.1"
+
+[[package]]
+name = "plabayo-news-builder"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "pulldown-cmark",
+ "serde",
+ "serde_yaml",
+ "toml",
+]
 
 [[package]]
 name = "plabayo-news-data"
@@ -1414,6 +1425,7 @@ dependencies = [
  "env_logger",
  "fnv",
  "lazy_static",
+ "plabayo-news-builder",
  "pulldown-cmark",
  "rust-i18n",
  "static-files",
