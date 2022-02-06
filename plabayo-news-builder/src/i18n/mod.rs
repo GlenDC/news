@@ -2,6 +2,7 @@ use anyhow::Result;
 
 mod config;
 mod locales;
+mod codegen;
 
 /// build the i18n locale structs and (Askama) templates
 /// for the project

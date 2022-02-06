@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::convert::TryFrom;
 use std::fs::File;
 use std::path::Path;
@@ -34,6 +34,14 @@ impl Storage {
     pub fn all_locales(&self) -> impl Iterator<Item = &str> {
         self.locale_to_values_map.keys().map(|k| k.as_str())
     }
+
+    pub fn get_default(&self) -> Option<&Locales> {
+        self.get(&self.default_locale)
+    }
+
+    pub fn get(&self, locale: &str) -> Option<&Locales> {
+        self.locale_to_values_map.get(locale)
+    }
 }
 
 #[derive(Debug)]
@@ -51,8 +59,86 @@ impl Locales {
         Ok(Locales { values })
     }
 
-    pub fn get<'a>(&self, path: impl Iterator<Item = &'a str>) -> Option<TypedValue> {
-        None
+    pub fn iter(&self) -> impl Iterator<Item=StringValuePathPair> + '_ {
+        ValueIter::new(&self.values)
+    }
+}
+
+pub struct ValueIter<'a> {
+    stack: VecDeque<ValuePathPairRef<'a>>,
+}
+
+struct ValuePathPairRef<'a> {
+    value: &'a Value,
+    path: Vec<String>,
+}
+
+pub struct StringValuePathPair {
+    pub value: String,
+    pub path: Vec<String>,
+}
+
+impl<'a> ValueIter<'a> {
+    pub fn new(values: &'a HashMap<String, Value>) -> ValueIter<'a> {
+        let mut stack = VecDeque::with_capacity(values.len());
+        for (k, v) in values {
+            stack.push_back(ValuePathPairRef{
+                value: v,
+                path: vec![k.clone()],
+            });
+        }
+        ValueIter { stack }
+    }
+}
+
+impl<'a> Iterator for ValueIter<'a> {
+    type Item = StringValuePathPair;
+
+    fn next(&mut self) -> Option<StringValuePathPair> {
+        loop {
+            match self.stack.pop_front() {
+                None => return None,
+                Some(pair_ref) => {
+                    match pair_ref.value {
+                        Value::Null => return Some(StringValuePathPair{
+                            value: "".to_owned(),
+                            path: pair_ref.path,
+                        }),
+                        Value::Bool(b) => return Some(StringValuePathPair{
+                            value: (if *b { "true" } else { "false" }).to_owned(),
+                            path: pair_ref.path,
+                        }),
+                        Value::Number(n) => return Some(StringValuePathPair{
+                            value: format!("{}", n),
+                            path: pair_ref.path,
+                        }),
+                        Value::String(s) => return Some(StringValuePathPair{
+                            value: s.clone(),
+                            path: pair_ref.path,
+                        }),
+                        Value::Sequence(_) => continue,
+                        Value::Mapping(m) => match TypedValue::try_from(pair_ref.value) {
+                            Ok(tv) => return Some(StringValuePathPair{
+                                value: tv.to_string(),
+                                path: pair_ref.path,
+                            }),
+                            Err(_) => {
+                                for (k, v) in m {
+                                    if let Some(key) = k.as_str() {
+                                        let mut path = pair_ref.path.clone();
+                                        path.push(key.to_owned());
+                                        self.stack.push_back(ValuePathPairRef{
+                                            value: v,
+                                            path: path,
+                                        });
+                                    }
+                                }
+                            }
+                        },
+                    }
+                },
+            }
+        }
     }
 }
 
@@ -67,12 +153,13 @@ enum ValueFormat {
 #[derive(Deserialize)]
 struct TypedValue {
     value: String,
-    format: ValueFormat,
+    format: Option<ValueFormat>,
 }
 
 impl ToString for TypedValue {
     fn to_string(&self) -> String {
-        match self.format {
+        let format = self.format.as_ref().unwrap_or(&ValueFormat::Text);
+        match format {
             ValueFormat::Text => self.value.clone(),
             ValueFormat::Markdown => {
                 let mut options = Options::empty();
@@ -95,7 +182,7 @@ impl TryFrom<&Value> for TypedValue {
         if let Some(s) = value.as_str() {
             return Ok(TypedValue {
                 value: s.to_owned(),
-                format: ValueFormat::Text,
+                format: Some(ValueFormat::Text),
             });
         }
         let value: TypedValue = from_value(value.clone())?;
