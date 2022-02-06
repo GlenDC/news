@@ -100,10 +100,7 @@ impl<'a> Iterator for ValueIter<'a> {
                 None => return None,
                 Some(pair_ref) => {
                     match pair_ref.value {
-                        Value::Null => return Some(StringValuePathPair{
-                            value: "".to_owned(),
-                            path: pair_ref.path,
-                        }),
+                        Value::Null => continue,
                         Value::Bool(b) => return Some(StringValuePathPair{
                             value: (if *b { "true" } else { "false" }).to_owned(),
                             path: pair_ref.path,
