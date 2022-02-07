@@ -1,6 +1,8 @@
 use pulldown_cmark::{html, Options, Parser};
 use rust_i18n::t;
 
+pub mod locales;
+
 pub const DEFAULT_LOCALE: &str = "en";
 pub const SUPPORTED_LOCALES: &[&str] = &[DEFAULT_LOCALE, "nl", "es"];
 

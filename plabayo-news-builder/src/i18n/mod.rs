@@ -9,6 +9,5 @@ mod codegen;
 pub fn build(cargo_toml: &str) -> Result<()> {
     let i18n_cfg = config::load(cargo_toml)?;
     let locales_storage = locales::Storage::load(&i18n_cfg.path, &i18n_cfg.locales[..])?;
-    println!("{:?}", locales_storage);
-    Ok(())
+    codegen::generate_locales(&i18n_cfg.out, &locales_storage)
 }

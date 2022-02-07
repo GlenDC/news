@@ -45,7 +45,7 @@ impl Storage {
 }
 
 #[derive(Debug)]
-struct Locales {
+pub struct Locales {
     values: HashMap<String, Value>,
 }
 
@@ -53,9 +53,9 @@ impl Locales {
     pub fn load(path: &str, locale: &str) -> Result<Locales> {
         let locale_path = Path::new(path).join(format!("{}.yml", locale));
         let locales_file = File::open(locale_path)
-            .with_context(|| format!("open locale file {}/{}.yml", path, locale,))?;
+            .with_context(|| format!("open locale file {}/{}.yml", path, locale))?;
         let values: HashMap<String, Value> = from_reader(locales_file)
-            .with_context(|| format!("load locale file {}/{}.yml", path, locale,))?;
+            .with_context(|| format!("load locale file {}/{}.yml", path, locale))?;
         Ok(Locales { values })
     }
 

@@ -12,6 +12,7 @@ path = "./src/main.rs"
 [package.metadata.i18n]
 locales = [ "en", "es", "nl" ]
 path = "./site/locales"
+out = "./src/site/l18n"
 
 [dependencies]
 env_logger = "0"
