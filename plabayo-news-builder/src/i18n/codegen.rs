@@ -124,7 +124,8 @@ fn generate_locales_strings_struct(
                     b"}
 
 ",
-                ).unwrap();
+                )
+                .unwrap();
                 w.write_all(
                     format!(
                         "pub struct Strings{} {{
@@ -135,7 +136,8 @@ fn generate_locales_strings_struct(
                             .join("")
                     )
                     .as_bytes(),
-                ).unwrap();
+                )
+                .unwrap();
                 previous = current;
             }
 
@@ -153,7 +155,8 @@ fn generate_locales_strings_struct(
                         key.to_lowercase().trim()
                     )
                     .as_bytes(),
-                ).unwrap();
+                )
+                .unwrap();
             } else if current_property != previous_property {
                 // object
                 w.write_all(
@@ -167,7 +170,8 @@ fn generate_locales_strings_struct(
                             .join("")
                     )
                     .as_bytes(),
-                ).unwrap();
+                )
+                .unwrap();
                 previous_property = current_property;
             }
 
@@ -179,7 +183,6 @@ fn generate_locales_strings_struct(
     }
     w.write_all(
         b"}
-
 ",
     )?;
     Ok(())
