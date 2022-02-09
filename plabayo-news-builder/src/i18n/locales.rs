@@ -75,7 +75,7 @@ struct ValuePathPairRef<'a> {
     path: Vec<String>,
 }
 
-#[derive(Eq, Ord)]
+#[derive(Eq, Ord, Clone)]
 pub struct StringValuePathPair {
     pub value: String,
     pub path: Vec<String>,

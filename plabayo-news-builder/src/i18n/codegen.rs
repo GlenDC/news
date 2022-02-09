@@ -26,7 +26,26 @@ pub fn generate_locales(dir: &str, storage: &Storage) -> Result<()> {
         default_pairs.iter().map(|p| p.path.clone()).collect(),
     )?;
 
-    generate_locales_strings_instance_default(&file, default_pairs.iter())?;
+    generate_locales_strings_instance(&file, "STRINGS_DEFAULT", default_pairs.iter())?;
+
+    for locale in storage
+        .all_locales()
+        .filter(|locale| locale != &storage.default_locale())
+    {
+        let iter = LocaleStringWithDefaultIter::new(
+            storage
+                .get(locale)
+                .ok_or_else(|| anyhow!("failed to get strings for locale {}", locale))?
+                .iter(),
+            default_pairs.clone().into_iter(),
+        );
+        let pairs: Vec<StringValuePathPair> = iter.collect();
+        generate_locales_strings_instance(
+            &file,
+            &format!("STRINGS_{}", locale.to_case(Case::ScreamingSnake)),
+            pairs.iter(),
+        )?;
+    }
 
     Ok(())
 }
@@ -192,13 +211,19 @@ fn generate_locales_strings_struct(
     Ok(())
 }
 
-fn generate_locales_strings_instance_default<'a>(
+fn generate_locales_strings_instance<'a> (
     mut w: impl std::io::Write,
+    const_name: &str,
     pairs: impl Iterator<Item = &'a StringValuePathPair>,
 ) -> Result<()> {
     w.write_all(
-        b"const STRINGS_DEFAULT: Strings = Strings{
+        format!(
+            "
+const {}: Strings = Strings{{
 ",
+            const_name
+        )
+        .as_bytes(),
     )?;
     let mut previous_layer = 0;
     let mut previous_path = None;
@@ -282,8 +307,8 @@ fn generate_locales_strings_instance_default<'a>(
         let key = &pair.path[previous_layer];
         w.write_all(
             format!(
-                r###"{}{}: r##"{}"##,
-"###,
+                r#################"{}{}: r################"{}"################,
+"#################,
                 "    ".repeat(previous_layer + 1),
                 key,
                 pair.value
@@ -310,4 +335,68 @@ fn generate_locales_strings_instance_default<'a>(
 ",
     )?;
     Ok(())
+}
+
+struct LocaleStringWithDefaultIter<
+    T: Iterator<Item = StringValuePathPair>,
+    U: Iterator<Item = StringValuePathPair>,
+> {
+    pairs: Box<T>,
+    default_pairs: Box<U>,
+    next_default_pair: Option<StringValuePathPair>,
+}
+
+impl<
+        T: Iterator<Item = StringValuePathPair>,
+        U: Iterator<Item = StringValuePathPair>,
+    > LocaleStringWithDefaultIter<T, U>
+{
+    pub fn new(pairs: T, mut default_pairs: U) -> LocaleStringWithDefaultIter<T, U> {
+        let next_default_pair = default_pairs.next();
+        LocaleStringWithDefaultIter {
+            pairs: Box::new(pairs),
+            default_pairs: Box::new(default_pairs),
+            next_default_pair: next_default_pair,
+        }
+    }
+}
+
+impl<
+        T: Iterator<Item = StringValuePathPair>,
+        U: Iterator<Item = StringValuePathPair>,
+    > Iterator for LocaleStringWithDefaultIter<T, U>
+{
+    type Item = StringValuePathPair;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match std::mem::replace(&mut self.next_default_pair, None) {
+            None => None,
+            Some(next_default_pair) => {
+                while let Some(pair) = self.pairs.next() {
+                    if pair == next_default_pair {
+                        self.next_default_pair = self.default_pairs.next();
+                        return Some(pair.clone());
+                    }
+                    if pair > next_default_pair  {
+                        continue;
+                    }
+                    // missing keys, we'll fill up...
+                    self.next_default_pair = self.default_pairs.next();
+                    return Some(StringValuePathPair {
+                        path: next_default_pair.path.clone(),
+                        value: format!(
+                            "&DEFAULT_LOCALE.{}",
+                            next_default_pair
+                                .path
+                                .iter()
+                                .map(|s| s.to_case(Case::Pascal))
+                                .join("")
+                        ),
+                    });
+                }
+                self.next_default_pair = self.default_pairs.next();
+                None
+            }
+        }
+    }
 }
