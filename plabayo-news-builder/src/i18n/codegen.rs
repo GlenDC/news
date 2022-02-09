@@ -131,6 +131,29 @@ fn generate_locales_enum(mut w: impl std::io::Write, storage: &Storage) -> Resul
     w.write_all(
         b"        }
     }
+
+",
+    )?;
+
+    w.write_all(
+        b"    pub fn as_str(&self) -> &str {
+        match self {",
+    )?;
+    for locale in storage.all_locales() {
+        w.write_all(
+            format!(
+                r#"
+            Self::{} => "{}","#,
+                locale.to_case(Case::Pascal),
+                locale.to_case(Case::Kebab),
+            )
+            .as_bytes(),
+        )?;
+    }
+    w.write_all(
+        b"
+        }
+    }
 }
 
 ",
