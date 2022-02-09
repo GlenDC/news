@@ -1,5 +1,5 @@
-use serde::Deserialize;
 use anyhow::Result;
+use serde::Deserialize;
 use toml;
 
 #[derive(Deserialize)]

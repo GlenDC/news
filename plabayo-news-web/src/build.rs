@@ -8,7 +8,6 @@ fn main() -> Result<()> {
     // Generate the default 'cargo:' instruction output
     vergen(Config::default())?;
 
-
     // build the i18n locale structs and (Askama) templates
     // for the website's static pages.
     i18n::build("./Cargo.toml")?;
