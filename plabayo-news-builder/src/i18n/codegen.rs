@@ -5,7 +5,7 @@ use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
 use itertools::Itertools;
 
-use crate::i18n::locales::Storage;
+use crate::i18n::locales::{Storage, StringValuePathPair};
 
 pub fn generate_locales(dir: &str, storage: &Storage) -> Result<()> {
     fs::create_dir_all(dir)?;
@@ -19,10 +19,14 @@ pub fn generate_locales(dir: &str, storage: &Storage) -> Result<()> {
 
     generate_locales_enum(&file, storage)?;
 
+    let default_pairs: Vec<StringValuePathPair> = default_locales.iter().collect();
+
     generate_locales_strings_struct(
         &file,
-        default_locales.iter().map(|p| p.path.clone()).collect(),
+        default_pairs.iter().map(|p| p.path.clone()).collect(),
     )?;
+
+    generate_locales_strings_instance_default(&file, default_pairs.iter())?;
 
     Ok(())
 }
@@ -112,7 +116,8 @@ fn generate_locales_strings_struct(
         }
         let mut previous: Option<String> = None;
         let mut previous_property: Option<String> = None;
-        paths.retain(|path| {
+        let mut retained_paths = Vec::new();
+        for path in paths {
             // create new struct if needed
             let current = if layer == 0 {
                 None
@@ -124,8 +129,7 @@ fn generate_locales_strings_struct(
                     b"}
 
 ",
-                )
-                .unwrap();
+                )?;
                 w.write_all(
                     format!(
                         "pub struct Strings{} {{
@@ -136,8 +140,7 @@ fn generate_locales_strings_struct(
                             .join("")
                     )
                     .as_bytes(),
-                )
-                .unwrap();
+                )?;
                 previous = current;
             }
 
@@ -155,8 +158,7 @@ fn generate_locales_strings_struct(
                         key.to_lowercase().trim()
                     )
                     .as_bytes(),
-                )
-                .unwrap();
+                )?;
             } else if current_property != previous_property {
                 // object
                 w.write_all(
@@ -170,19 +172,141 @@ fn generate_locales_strings_struct(
                             .join("")
                     )
                     .as_bytes(),
-                )
-                .unwrap();
+                )?;
                 previous_property = current_property;
             }
 
             // retain if we do not wish to drop
-            !drop
-        });
+            if !drop {
+                retained_paths.push(path);
+            }
+        }
 
         layer += 1;
+        paths = retained_paths;
     }
     w.write_all(
         b"}
+",
+    )?;
+    Ok(())
+}
+
+fn generate_locales_strings_instance_default<'a>(
+    mut w: impl std::io::Write,
+    pairs: impl Iterator<Item = &'a StringValuePathPair>,
+) -> Result<()> {
+    w.write_all(
+        b"const STRINGS_DEFAULT: Strings = Strings{
+",
+    )?;
+    let mut previous_layer = 0;
+    let mut previous_path = None;
+    // for each locale string...
+    for pair in pairs {
+        let current_layer = pair.path.len() - 1;
+        if current_layer > previous_layer {
+            // handle case in case we are indenting more (creating a child)
+            while current_layer > previous_layer {
+                let key = &pair.path[previous_layer];
+                w.write_all(
+                    format!(
+                        "{}{}: Strings{}{{
+",
+                        "    ".repeat(previous_layer + 1),
+                        key,
+                        pair.path[..=previous_layer]
+                            .iter()
+                            .map(|s| s.to_case(Case::Pascal))
+                            .join(""),
+                    )
+                    .as_bytes(),
+                )?;
+                previous_layer += 1;
+            }
+        } else if current_layer < previous_layer {
+            // as well as the case where we indenting less (ending a child)
+            while current_layer < previous_layer {
+                previous_layer -= 1;
+                w.write_all(
+                    format!(
+                        "{}}},
+",
+                        "    ".repeat(previous_layer + 1)
+                    )
+                    .as_bytes(),
+                )?;
+            }
+        } else {
+            // and finally handle the cases where we go from one nested child to another
+            let mut overlap_layer = 0;
+            if let Some(previous_path) = previous_path {
+                for (key_a, key_b) in pair.path.iter().zip(previous_path) {
+                    if key_a != key_b {
+                        break;
+                    }
+                    overlap_layer += 1;
+                }
+                if overlap_layer < previous_layer {
+                    for idx in 0..(previous_layer - overlap_layer) {
+                        w.write_all(
+                            format!(
+                                "{}}},
+",
+                                "    ".repeat(previous_layer - idx)
+                            )
+                            .as_bytes(),
+                        )?;
+                    }
+                    while overlap_layer < previous_layer {
+                        let key = &pair.path[overlap_layer];
+                        w.write_all(
+                            format!(
+                                "{}{}: Strings{}{{
+",
+                                "    ".repeat(overlap_layer + 1),
+                                key,
+                                pair.path[..=overlap_layer]
+                                    .iter()
+                                    .map(|s| s.to_case(Case::Pascal))
+                                    .join(""),
+                            )
+                            .as_bytes(),
+                        )?;
+                        overlap_layer += 1;
+                    }
+                }
+            }
+        }
+        // write the actual locale string...
+        let key = &pair.path[previous_layer];
+        w.write_all(
+            format!(
+                r###"{}{}: r##"{}"##,
+"###,
+                "    ".repeat(previous_layer + 1),
+                key,
+                pair.value
+            )
+            .as_bytes(),
+        )?;
+        // keep track of the previous path to be handle the more complex nesting cases
+        previous_path = Some(&pair.path);
+    }
+    // add all the final curly brackets... including the last one
+    while previous_layer > 0 {
+        previous_layer -= 1;
+        w.write_all(
+            format!(
+                "{}}},
+",
+                "    ".repeat(previous_layer + 1)
+            )
+            .as_bytes(),
+        )?;
+    }
+    w.write_all(
+        b"};
 ",
     )?;
     Ok(())

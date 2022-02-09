@@ -171,7 +171,7 @@ impl<'a> Iterator for ValueIter<'a> {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 enum ValueFormat {
     #[serde(rename = "txt")]
     Text,
@@ -179,7 +179,7 @@ enum ValueFormat {
     Markdown,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct TypedValue {
     value: String,
     format: Option<ValueFormat>,

@@ -1,36 +1,39 @@
-en:
-  site:
-    name: Plabayo News
-    locales:
-      en: "English"
-      es: "Spanish"
-      nl: "Dutch"
-    nav:
-      header:
-        news: "news"
-        past: "past"
-        comments: "comments"
-        ask: "ask"
-        submit: "submit"
-        login: "login"
-        locale: "language"
-        select: "select"
-      footer:
-        guidelines: "Guidelines"
-        faq: "FAQ"
-        api: "API"
-        security: "Security"
-        legal: "Legal"
-        contact: "Contact"
-        search: "Search"
-        build_info: "Server Build Information"
-  page:
-    security:
-      intro: >
+site:
+  name: Plabayo News
+  locales:
+    en: "English"
+    es: "Spanish"
+    nl: "Dutch"
+  nav:
+    header:
+      news: "news"
+      past: "past"
+      comments: "comments"
+      ask: "ask"
+      submit: "submit"
+      login: "login"
+      locale: "language"
+      select: "select"
+    footer:
+      guidelines: "Guidelines"
+      faq: "FAQ"
+      api: "API"
+      security: "Security"
+      legal: "Legal"
+      contact: "Contact"
+      search: "Search"
+      build_info: "Server Build Information"
+page:
+  security:
+    intro:
+      format: md
+      value: >
         # Plabayo News Security
 
         If you find a security hole, please let us know at [security@plabayo.tech](mailto:security@plabayo.tech).
 
         We try to respond (with fixes!) as soon as possible, and really appreciate the help.
-      reports: >
+    reports:
+      format: txt
+      value: >
         No security holes have been disclosed to us.
