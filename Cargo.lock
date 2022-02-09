@@ -1405,6 +1405,7 @@ version = "0.0.1"
 dependencies = [
  "anyhow",
  "convert_case",
+ "itertools",
  "pulldown-cmark",
  "serde",
  "serde_yaml",

@@ -1,9 +1,11 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fs::File;
 use std::path::Path;
+use std::cmp::Ordering;
 
 use anyhow::{Context, Error, Result};
+use itertools::Itertools;
 use pulldown_cmark::{html, Options, Parser};
 use serde::Deserialize;
 use serde_yaml::{from_reader, from_value, Value};
@@ -32,7 +34,7 @@ impl Storage {
     }
 
     pub fn all_locales(&self) -> impl Iterator<Item = &str> {
-        self.locale_to_values_map.keys().map(|k| k.as_str())
+        self.locale_to_values_map.keys().map(|k| k.as_str()).sorted()
     }
 
     pub fn get_default(&self) -> Option<&Locales> {
@@ -60,12 +62,12 @@ impl Locales {
     }
 
     pub fn iter(&self) -> impl Iterator<Item=StringValuePathPair> + '_ {
-        ValueIter::new(&self.values)
+        ValueIter::new(&self.values).sorted()
     }
 }
 
 pub struct ValueIter<'a> {
-    stack: VecDeque<ValuePathPairRef<'a>>,
+    stack: Vec<ValuePathPairRef<'a>>,
 }
 
 struct ValuePathPairRef<'a> {
@@ -73,16 +75,46 @@ struct ValuePathPairRef<'a> {
     path: Vec<String>,
 }
 
+#[derive(Eq, Ord)]
 pub struct StringValuePathPair {
     pub value: String,
     pub path: Vec<String>,
 }
 
+impl PartialEq for StringValuePathPair {
+    fn eq(&self, other: &StringValuePathPair) -> bool {
+        if self.path.len() != other.path.len() {
+            return false;
+        } 
+        for i in 0..self.path.len() {
+            if self.path[i] != other.path[i] {
+                return false;
+            }
+        }
+        true
+    }
+}
+
+impl PartialOrd for StringValuePathPair {
+    fn partial_cmp(&self, other: &StringValuePathPair) -> Option<Ordering> {
+        for i in 0..self.path.len() {
+            let c = self.path[i].partial_cmp(&other.path[i]);
+            if i >= other.path.len() {
+                return Some(Ordering::Less);
+            }
+            if !matches!(c, Some(Ordering::Equal)) {
+                return c;
+            }
+        }
+        Some(Ordering::Equal)
+    }
+}
+
 impl<'a> ValueIter<'a> {
     pub fn new(values: &'a HashMap<String, Value>) -> ValueIter<'a> {
-        let mut stack = VecDeque::with_capacity(values.len());
+        let mut stack = Vec::with_capacity(values.len());
         for (k, v) in values {
-            stack.push_back(ValuePathPairRef{
+            stack.push(ValuePathPairRef{
                 value: v,
                 path: vec![k.clone()],
             });
@@ -96,7 +128,7 @@ impl<'a> Iterator for ValueIter<'a> {
 
     fn next(&mut self) -> Option<StringValuePathPair> {
         loop {
-            match self.stack.pop_front() {
+            match self.stack.pop() {
                 None => return None,
                 Some(pair_ref) => {
                     match pair_ref.value {
@@ -124,7 +156,7 @@ impl<'a> Iterator for ValueIter<'a> {
                                     if let Some(key) = k.as_str() {
                                         let mut path = pair_ref.path.clone();
                                         path.push(key.to_owned());
-                                        self.stack.push_back(ValuePathPairRef{
+                                        self.stack.push(ValuePathPairRef{
                                             value: v,
                                             path: path,
                                         });
