@@ -22,8 +22,6 @@ static-files = "0"
 askama = "0"
 anyhow = "1"
 fnv = "1"
-lazy_static = "1"
-pulldown-cmark = "0"
 
 [build-dependencies]
 plabayo-news-builder = { path = "../plabayo-news-builder" }

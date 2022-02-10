@@ -1402,9 +1402,7 @@ dependencies = [
  "askama",
  "env_logger",
  "fnv",
- "lazy_static",
  "plabayo-news-builder",
- "pulldown-cmark",
  "static-files",
  "vergen",
 ]
