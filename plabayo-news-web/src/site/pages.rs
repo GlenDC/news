@@ -38,11 +38,7 @@ async fn page_unknown(locale: Locale, data: web::Data<SiteState>) -> Result<Http
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-async fn page_news(
-    locale: Locale,
-    path: &str,
-    data: web::Data<SiteState>,
-) -> Result<HttpResponse> {
+async fn page_news(locale: Locale, path: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
     let s = pages::News::new(locale, path, &data.info).render().unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }

@@ -139,22 +139,18 @@ pub enum Locale {
     )?;
 
     w.write_all(
-        b"    pub fn all() -> impl Iterator<Item=Locale> {
-        vec![
-",
+        b"    pub fn all() -> impl Iterator<Item = Locale> {
+        vec![",
     )?;
-    for locale in storage.all_locales() {
-        w.write_all(
-            format!(
-                "            Self::{},
-",
-                locale.to_case(Case::Pascal)
-            )
-            .as_bytes(),
-        )?;
-    }
     w.write_all(
-        b"        ].into_iter()
+        storage
+            .all_locales()
+            .map(|locale| format!("Self::{}", locale.to_case(Case::Pascal)))
+            .join(", ")
+            .as_bytes(),
+    )?;
+    w.write_all(
+        b"].into_iter()
     }
 ",
     )?;
@@ -372,7 +368,7 @@ fn generate_locales_strings_struct_methods(
     w.write_all(
         b"
 impl StringsSiteLocales {
-    pub fn iter(&self) -> impl Iterator<Item=(Locale, &str)> {
+    pub fn iter(&self) -> impl Iterator<Item = (Locale, &str)> {
         vec![
 ",
     )?;
@@ -388,7 +384,8 @@ impl StringsSiteLocales {
         )?;
     }
     w.write_all(
-        b"        ].into_iter()
+        b"        ]
+        .into_iter()
     }
 }
 ",
