@@ -23,6 +23,7 @@ impl SiteState {
             build_semver,
             git_sha,
             git_sha_short,
+            repository: "https://github.com/plabayo/news",
         };
         SiteState { info }
     }
@@ -40,4 +41,5 @@ pub struct SiteInfo {
     pub build_semver: &'static str,
     pub git_sha: &'static str,
     pub git_sha_short: String,
+    pub repository: &'static str,
 }

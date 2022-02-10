@@ -23,7 +23,6 @@ askama = "0"
 anyhow = "1"
 fnv = "1"
 lazy_static = "1"
-rust-i18n = "0"
 pulldown-cmark = "0"
 
 [build-dependencies]

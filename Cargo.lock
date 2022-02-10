@@ -308,15 +308,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ansi_term"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d52a9bb7ec0cf484c551830a7ce27bd20d67eac647e1befb56b0be4ee39a55d2"
-dependencies = [
- "winapi 0.3.9",
-]
-
-[[package]]
 name = "anyhow"
 version = "1.0.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -543,21 +534,6 @@ dependencies = [
  "num-traits",
  "time 0.1.44",
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "clap"
-version = "2.34.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0610544180c38b88101fecf2dd634b174a62eef6946f84dfc6a7127512b381c"
-dependencies = [
- "ansi_term",
- "atty",
- "bitflags",
- "strsim",
- "textwrap",
- "unicode-width",
- "vec_map",
 ]
 
 [[package]]
@@ -1429,7 +1405,6 @@ dependencies = [
  "lazy_static",
  "plabayo-news-builder",
  "pulldown-cmark",
- "rust-i18n",
  "static-files",
  "vergen",
 ]
@@ -1581,75 +1556,6 @@ checksum = "52e44394d2086d010551b14b53b1f24e31647570cd1deb0379e2c21b329aba00"
 dependencies = [
  "hostname",
  "quick-error",
-]
-
-[[package]]
-name = "rust-i18n"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3c9cef8fb0d2fbc0612308d2e6a8f831f82cb7fbd40decb19919572f2c3c2db"
-dependencies = [
- "anyhow",
- "clap",
- "glob",
- "itertools",
- "lazy_static",
- "quote",
- "regex",
- "rust-i18n-extract",
- "rust-i18n-macro",
- "serde",
- "serde_derive",
- "toml",
-]
-
-[[package]]
-name = "rust-i18n-extract"
-version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d308a4b3338410af15810b6672c05f6505b799c9d45723fd65bdc5d60982f6b"
-dependencies = [
- "anyhow",
- "glob",
- "proc-macro2",
- "quote",
- "regex",
- "rust-i18n-support",
- "serde",
- "serde_json",
- "serde_yaml",
- "syn",
-]
-
-[[package]]
-name = "rust-i18n-macro"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33b751615923eed3132fffdbdb33741f543a8160c378cf52839a13f927b7875c"
-dependencies = [
- "glob",
- "lazy_static",
- "proc-macro2",
- "quote",
- "rust-i18n-support",
- "serde",
- "serde_json",
- "serde_yaml",
- "syn",
-]
-
-[[package]]
-name = "rust-i18n-support"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a788ab84a6a376ebfc86e1aecc929c9c4ee96481f059c03c99731224e75b1464"
-dependencies = [
- "glob",
- "lazy_static",
- "proc-macro2",
- "serde",
- "serde_json",
- "serde_yaml",
 ]
 
 [[package]]
@@ -1894,12 +1800,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
-name = "strsim"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
-
-[[package]]
 name = "syn"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1917,15 +1817,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2dfed899f0eb03f32ee8c6a0aabdb8a7949659e3466561fc0adf54e26d88c5f4"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "textwrap"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
-dependencies = [
- "unicode-width",
 ]
 
 [[package]]
@@ -2199,12 +2090,6 @@ name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
-
-[[package]]
-name = "vec_map"
-version = "0.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1bddf1187be692e79c5ffeab891132dfb0f236ed36a43c7ed39f1165ee20191"
 
 [[package]]
 name = "vergen"

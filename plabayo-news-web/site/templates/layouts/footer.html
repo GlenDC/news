@@ -1,35 +1,35 @@
 <footer class="clr-primary-bg-alt">
     <nav id="nav-footer">
         <div id="nav-footer-info">
-            {{ i18n.site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
+            {{ page.locale.strings().site.nav.footer.build_info }}: <a href="https://github.com/plabayo/news/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
         </div>
         <div id="nav-footer-buttons">
             <ul class="nav-buttons">
-                <li class="{{ i18n.site.class_nav_button_for("/guidelines") }}">
-                    <a href="/guidelines?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.guidelines }}</a>
+                <li class="{{ page.class_nav_button_for("/guidelines") }}">
+                    <a href="/guidelines?loc={{ page.locale }}">{{ page.locale.strings().site.nav.footer.guidelines }}</a>
                 </li>
-                <li class="{{ i18n.site.class_nav_button_for("/faq") }}">
-                    <a href="/faq?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.faq }}</a>
+                <li class="{{ page.class_nav_button_for("/faq") }}">
+                    <a href="/faq?loc={{ page.locale }}">{{ page.locale.strings().site.nav.footer.faq }}</a>
                 </li>
-                <li class="{{ i18n.site.class_nav_button_for("/api") }}">
-                    <a href="/api?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.api }}</a>
+                <li class="{{ page.class_nav_button_for("/api") }}">
+                    <a href="/api?loc={{ page.locale }}">{{ page.locale.strings().site.nav.footer.api }}</a>
                 </li>
-                <li class="{{ i18n.site.class_nav_button_for("/security") }}">
-                    <a href="/security?loc={{ i18n.site.locale }}">{{ i18n.site.nav.footer.security }}</a>
+                <li class="{{ page.class_nav_button_for("/security") }}">
+                    <a href="/security?loc={{ page.locale }}">{{ page.locale.strings().site.nav.footer.security }}</a>
                 </li>
-                <li class="{{ i18n.site.class_nav_button_for("/legal") }}">
-                    <a href="{{ i18n.site.repository }}/blob/main/LEGAL.md">{{ i18n.site.nav.footer.legal }}</a>
+                <li class="{{ page.class_nav_button_for("/legal") }}">
+                    <a href="{{ site_info.repository }}/blob/main/LEGAL.md">{{ page.locale.strings().site.nav.footer.legal }}</a>
                 </li>
                 <li>
-                    <a href="mailto:pn@plabayo.tech">{{ i18n.site.nav.footer.contact }}</a>
+                    <a href="mailto:pn@plabayo.tech">{{ page.locale.strings().site.nav.footer.contact }}</a>
                 </li>
             </ul>
         </div>
         <div id="nav-footer-search">
             <form method="get" action="/search">
-                <label for="search">{{ i18n.site.nav.footer.search }}:</label>
+                <label for="search">{{ page.locale.strings().site.nav.footer.search }}:</label>
                 <input id="search" type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false"/>
-                {% for (key, value) in i18n.site.params_for("/search", "q") %}
+                {% for (key, value) in page.params_for("/search", "q") %}
                 <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
                 {% endfor %}
             </form>
