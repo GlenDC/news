@@ -5,6 +5,7 @@ use actix_web::{web, HttpResponse, Result};
 use askama::Template;
 
 use crate::site::l18n::locales::Locale;
+use crate::site::l18n::pages::static_response;
 use crate::site::state::SiteState;
 use crate::site::templates::pages;
 
@@ -25,17 +26,9 @@ async fn serve_page(
         "" | "home" | "index" => page_news(locale, "/", data).await,
         "new" | "news" => page_news(locale, "/news", data).await,
         "search" => page_search(locale, "/search", data, query).await,
-        "security" => page_security(locale, "/security", data).await,
         "item" => page_item(locale, "/item", data, query).await,
-        _ => page_unknown(locale, data).await,
+        endpoint => static_response(locale, endpoint).await,
     }
-}
-
-async fn page_unknown(locale: Locale, data: web::Data<SiteState>) -> Result<HttpResponse> {
-    let s = pages::NotFound::new(locale, "/", &data.info)
-        .render()
-        .unwrap();
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 async fn page_news(locale: Locale, path: &str, data: web::Data<SiteState>) -> Result<HttpResponse> {
@@ -62,17 +55,6 @@ async fn page_search(
     query: web::Query<BTreeMap<String, String>>,
 ) -> Result<HttpResponse> {
     let s = pages::Search::new(locale, path, &data.info, &query.into_inner())
-        .render()
-        .unwrap();
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
-}
-
-async fn page_security(
-    locale: Locale,
-    path: &str,
-    data: web::Data<SiteState>,
-) -> Result<HttpResponse> {
-    let s = pages::Security::new(locale, path, &data.info)
         .render()
         .unwrap();
     Ok(HttpResponse::Ok().content_type("text/html").body(s))

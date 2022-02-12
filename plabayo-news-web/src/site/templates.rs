@@ -80,23 +80,6 @@ pub mod pages {
     use crate::site::state::SiteInfo;
 
     #[derive(Template)]
-    #[template(path = "pages/not_found.html")]
-    pub struct NotFound<'a> {
-        site_info: &'a SiteInfo,
-        page: PageState<'a>,
-    }
-
-    impl<'a> NotFound<'a> {
-        pub fn new(locale: Locale, path: &'a str, info: &'a SiteInfo) -> NotFound<'a> {
-            let page = PageState::new(locale, path, None);
-            NotFound {
-                site_info: info,
-                page,
-            }
-        }
-    }
-
-    #[derive(Template)]
     #[template(path = "pages/index.html")]
     pub struct News<'a> {
         site_info: &'a SiteInfo,
@@ -168,23 +151,6 @@ pub mod pages {
             Search {
                 site_info: info,
                 q,
-                page,
-            }
-        }
-    }
-
-    #[derive(Template)]
-    #[template(path = "pages/security.html", escape = "none")]
-    pub struct Security<'a> {
-        site_info: &'a SiteInfo,
-        page: PageState<'a>,
-    }
-
-    impl<'a> Security<'a> {
-        pub fn new(locale: Locale, path: &'a str, info: &'a SiteInfo) -> Security<'a> {
-            let page = PageState::new(locale, path, None);
-            Security {
-                site_info: info,
                 page,
             }
         }
