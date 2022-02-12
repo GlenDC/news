@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use actix_web::dev::HttpServiceFactory;
-use actix_web::{web, HttpResponse, error::ErrorInternalServerError, Result};
+use actix_web::{error::ErrorInternalServerError, web, HttpResponse, Result};
 use askama::Template;
 
 use crate::site::l18n::locales::Locale;
@@ -32,7 +32,7 @@ async fn serve_page(
 async fn page_news(locale: Locale, path: &str) -> Result<HttpResponse> {
     let s = pages::News::new(locale, path)
         .render()
-        .map_err(|e| ErrorInternalServerError(e))?;
+        .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
@@ -43,7 +43,7 @@ async fn page_item(
 ) -> Result<HttpResponse> {
     let s = pages::Item::new(locale, path, &query.into_inner())
         .render()
-        .map_err(|e| ErrorInternalServerError(e))?;
+        .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
@@ -54,6 +54,6 @@ async fn page_search(
 ) -> Result<HttpResponse> {
     let s = pages::Search::new(locale, path, &query.into_inner())
         .render()
-        .map_err(|e| ErrorInternalServerError(e))?;
+        .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }

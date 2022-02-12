@@ -16,7 +16,8 @@ out = "./src/site/l18n"
 
 [package.metadata.i18n.pages]
 path = "./site/templates/pages/static"
-not_found = "not_found.html"
+not_found = "unknown"
+templates_dir = "pages/static"
 
 [dependencies]
 env_logger = "0"

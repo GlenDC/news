@@ -29,6 +29,7 @@ pub struct I18n {
 pub struct StaticPages {
     pub path: String,
     pub not_found: String,
+    pub templates_dir: String,
 }
 
 /// Load the i18n config from the package's Cargo.toml metadata.
