@@ -112,7 +112,7 @@ fn generate_locales_enum(mut w: impl std::io::Write, storage: &Storage) -> Resul
     // 1. generate enum type
 
     w.write_all(
-        b"#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+        b"#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, std::hash::Hash)]
 pub enum Locale {
 ",
     )?;

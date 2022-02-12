@@ -3,9 +3,9 @@ use std::collections::BTreeMap;
 use crate::site::l18n::locales::Locale;
 
 pub struct PageState<'a> {
-    locale: Locale,
-    path: &'a str,
-    query: Option<PageQuery<'a>>,
+    pub locale: Locale,
+    pub path: &'a str,
+    pub query: Option<PageQuery<'a>>,
 }
 
 impl<'a> PageState<'a> {
@@ -67,7 +67,7 @@ impl<'a> PageState<'a> {
     }
 }
 
-struct PageQuery<'a> {
+pub struct PageQuery<'a> {
     params: BTreeMap<&'a str, &'a str>,
 }
 
@@ -77,7 +77,7 @@ pub mod pages {
     use askama::Template;
 
     use super::*;
-    use crate::site::state::SiteInfo;
+    use crate::site::{SiteInfo, SITE_INFO};
 
     #[derive(Template)]
     #[template(path = "pages/index.html")]
@@ -87,10 +87,10 @@ pub mod pages {
     }
 
     impl<'a> News<'a> {
-        pub fn new(locale: Locale, path: &'a str, info: &'a SiteInfo) -> News<'a> {
+        pub fn new(locale: Locale, path: &'a str) -> News<'a> {
             let page = PageState::new(locale, path, None);
             News {
-                site_info: info,
+                site_info: &SITE_INFO,
                 page,
             }
         }
@@ -108,7 +108,6 @@ pub mod pages {
         pub fn new(
             locale: Locale,
             path: &'a str,
-            info: &'a SiteInfo,
             params: &'a BTreeMap<String, String>,
         ) -> Item<'a> {
             let q = match params.get("q") {
@@ -119,7 +118,7 @@ pub mod pages {
             query.insert("q", q);
             let page = PageState::new(locale, path, Some(query));
             Item {
-                site_info: info,
+                site_info: &SITE_INFO,
                 q,
                 page,
             }
@@ -138,7 +137,6 @@ pub mod pages {
         pub fn new(
             locale: Locale,
             path: &'a str,
-            info: &'a SiteInfo,
             params: &'a BTreeMap<String, String>,
         ) -> Search<'a> {
             let q = match params.get("q") {
@@ -149,7 +147,7 @@ pub mod pages {
             query.insert("q", q);
             let page = PageState::new(locale, path, Some(query));
             Search {
-                site_info: info,
+                site_info: &SITE_INFO,
                 q,
                 page,
             }
