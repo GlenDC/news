@@ -18,6 +18,8 @@ pub struct Storage {
 
 impl Storage {
     pub fn load<T: AsRef<str>>(path: &str, supported_locales: &[T]) -> Result<Storage> {
+        println!("cargo:rerun-if-changed={}", path);
+
         let mut locale_to_values_map = HashMap::new();
         for supported_locale in supported_locales.iter().map(|r| r.as_ref()) {
             let locales = Locales::load(path, supported_locale)?;

@@ -8,6 +8,8 @@ use crate::i18n::config::StaticPages;
 use crate::i18n::locales::Storage;
 
 pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &StaticPages) -> Result<()> {
+    println!("cargo:rerun-if-changed={}", cfg.path);
+
     let file = File::create(file_path)
         .with_context(|| format!("create locales rust file at {}", file_path.display()))?;
 
