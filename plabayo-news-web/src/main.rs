@@ -1,6 +1,5 @@
 use actix_web::{middleware, App, HttpServer};
 
-use plabayo_news_web::site::state::SiteState;
 use plabayo_news_web::site::{assets, pages};
 
 #[actix_web::main]
@@ -11,7 +10,6 @@ async fn main() -> std::io::Result<()> {
     // start http server
     HttpServer::new(move || {
         App::new()
-            .data(SiteState::new())
             .wrap(middleware::Logger::default())
             .wrap(middleware::NormalizePath::new(
                 middleware::normalize::TrailingSlash::Trim,

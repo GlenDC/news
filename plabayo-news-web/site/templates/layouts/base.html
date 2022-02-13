@@ -4,7 +4,7 @@
     <head>
         {% include "layouts/head.html" %}
 
-        <title>{{ i18n.site.name }}</title>
+        <title>{{ page.locale.strings().site.name }}</title>
 
         {% block head %}{% endblock %}
     </head>

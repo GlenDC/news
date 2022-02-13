@@ -1,32 +1,32 @@
-nl:
-  site:
-    name: Plabayo Nieuws
-    locales:
-      en: "Engels"
-      es: "Spaans"
-      nl: "Nederlands"
-    nav:
-      header:
-        news: "nieuws"
-        past: "verleden"
-        comments: "commentaren"
-        ask: "vraag"
-        submit: "deel"
-        login: "inloggen"
-        locale: "taal"
-        select: "selecteer"
-      footer:
-        guidelines: "Richtlijnen"
-        faq: "FAQ"
-        api: "API"
-        security: "Beveiliging"
-        legal: "Beleid"
-        contact: "Contact"
-        search: "Zoek"
-        build_info: "TODO(Server Build Information)"
-  page:
-    security:
-      intro: >
+site:
+  name: Plabayo Nieuws
+  locales:
+    en: "Engels"
+    es: "Spaans"
+    nl: "Nederlands"
+  nav:
+    header:
+      news: "nieuws"
+      past: "verleden"
+      comments: "commentaren"
+      ask: "vraag"
+      submit: "deel"
+      login: "inloggen"
+      locale: "taal"
+      select: "selecteer"
+    footer:
+      guidelines: "Richtlijnen"
+      faq: "FAQ"
+      api: "API"
+      security: "Beveiliging"
+      legal: "Beleid"
+      contact: "Contact"
+      search: "Zoek"
+page:
+  security:
+    intro:
+      format: md
+      value: >
         # Plabayo Nieuws Beveiliging
 
         Indien je een veiligheidslek vind, laat het dan weten via
@@ -35,5 +35,7 @@ nl:
         We proberen dan zo snel mogelijk te reageren (met correcties).
         Wanneer het door u vermelde beveiligslek is gedicht zal u worden
         vermeld op deze pagina om je te bedanken en eren voor deze eervolle onderneming.
-      reports: >
+    reports:
+      format: md
+      value: >
         Er zijn nog geen beveiligslekken gemeld aan ons.

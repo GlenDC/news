@@ -1,48 +1,48 @@
 <header class="clr-secondary">
     <nav id="site-nav-main">
         <h1 class="nav-title">
-            <a href="/{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.name }}</a>
+            <a href="/{{ page.page_query_for("/news", "") }}">{{ page.locale.strings().site.name }}</a>
         </h1>
         <ul class="nav-buttons">
-            <li class="{{ i18n.site.class_nav_button_for("/news") }}">
-                <a href="/news{{ i18n.site.page_query_for("/news", "") }}">{{ i18n.site.nav.header.news }}</a>
+            <li class="{{ page.class_nav_button_for("/news") }}">
+                <a href="/news{{ page.page_query_for("/news", "") }}">{{ page.locale.strings().site.nav.header.news }}</a>
             </li>
-            <li class="{{ i18n.site.class_nav_button_for("/past") }}">
-                <a href="/past{{ i18n.site.page_query_for("/past", "") }}">{{ i18n.site.nav.header.past }}</a>
+            <li class="{{ page.class_nav_button_for("/past") }}">
+                <a href="/past{{ page.page_query_for("/past", "") }}">{{ page.locale.strings().site.nav.header.past }}</a>
             </li>
-            <li class="{{ i18n.site.class_nav_button_for("/comments") }}">
-                <a href="/comments{{ i18n.site.page_query_for("/comments", "") }}">{{ i18n.site.nav.header.comments }}</a>
+            <li class="{{ page.class_nav_button_for("/comments") }}">
+                <a href="/comments{{ page.page_query_for("/comments", "") }}">{{ page.locale.strings().site.nav.header.comments }}</a>
             </li>
-            <li class="{{ i18n.site.class_nav_button_for("/ask") }}">
-                <a href="/ask{{ i18n.site.page_query_for("/ask", "") }}">{{ i18n.site.nav.header.ask }}</a>
+            <li class="{{ page.class_nav_button_for("/ask") }}">
+                <a href="/ask{{ page.page_query_for("/ask", "") }}">{{ page.locale.strings().site.nav.header.ask }}</a>
             </li>
-            <li class="{{ i18n.site.class_nav_button_for("/submit") }}">
-                <a href="/submit{{ i18n.site.page_query_for("/submit", "") }}">{{ i18n.site.nav.header.submit }}</a>
+            <li class="{{ page.class_nav_button_for("/submit") }}">
+                <a href="/submit{{ page.page_query_for("/submit", "") }}">{{ page.locale.strings().site.nav.header.submit }}</a>
             </li>
         </ul>
     </nav>
     <nav id="site-nav-user">
         <ul class="nav-buttons">
-            <li class="{{ i18n.site.class_nav_button_for("/login") }}">
-                <a href="/login{{ i18n.site.page_query_for("/login", "") }}">{{ i18n.site.nav.header.login }}</a>
+            <li class="{{ page.class_nav_button_for("/login") }}">
+                <a href="/login{{ page.page_query_for("/login", "") }}">{{ page.locale.strings().site.nav.header.login }}</a>
             </li>
             <!-- TODO: enable again once we figure out how to use and style it
             <li>
-                <form method="get" action="{{ i18n.site.path }}" id="site_header_locale_form">
-                    <label for="locale">{{ i18n.site.nav.header.locale }}:</label>
+                <form method="get" action="{{ page.path }}" id="site_header_locale_form">
+                    <label for="locale">{{ page.locale.strings().site.nav.header.locale }}:</label>
                     <select name="loc" id="locale" form="site_header_locale_form">
-                    {% for (locale, locale_info) in i18n.site.locales %}
-                        {% if locale_info.active %}
-                        <option value="{{ locale }}" selected="selected">{{ locale_info.name }}</option>
+                    {% for (locale, locale_name) in page.locale.strings().site.locales.iter() %}
+                        {% if page.locale == locale %}
+                        <option value="{{ locale }}" selected="selected">{{ locale_name }}</option>
                         {% else %}
-                        <option value="{{ locale }}">{{ locale_info.name }}</option>
+                        <option value="{{ locale }}">{{ locale_name }}</option>
                         {% endif %}
                     {% endfor %}
                     </select>
-                    {% for (key, value) in i18n.site.params_current("loc") %}
+                    {% for (key, value) in page.params_current("loc") %}
                     <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
                     {% endfor %}
-                    <input type="submit" value="{{ i18n.site.nav.header.select }}" class="select" />
+                    <input type="submit" value="{{ page.locale.strings().site.nav.header.select }}" class="select" />
                 </form>
             </li>
             -->

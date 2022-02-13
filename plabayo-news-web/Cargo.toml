@@ -10,23 +10,28 @@ name = "plabayo-news-web"
 path = "./src/main.rs"
 
 [package.metadata.i18n]
-available-locales = ["en"]
-default-locale = "en"
-load-path = "./site/locales"
+locales = [ "en", "es", "nl" ]
+path = "./site/locales"
+out = "./src/site/l18n"
+
+[package.metadata.i18n.pages]
+path = "./site/templates/pages/static"
+not_found = "unknown"
+templates_dir = "pages/static"
 
 [dependencies]
 env_logger = "0"
 actix-web = "3"
 actix-web-static-files = "3"
+cached = "0"
 static-files = "0"
 askama = "0"
 anyhow = "1"
 fnv = "1"
 lazy_static = "1"
-rust-i18n = "0"
-pulldown-cmark = "0"
 
 [build-dependencies]
+plabayo-news-builder = { path = "../plabayo-news-builder" }
 actix-web-static-files = "3"
 askama = "0"
 anyhow = "1"

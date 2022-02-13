@@ -1,9 +1,10 @@
 [workspace]
 
 members = [
-    "plabayo-news-web",
-    "plabayo-news-data",
     "plabayo-news-api",
+    "plabayo-news-builder",
+    "plabayo-news-data",
+    "plabayo-news-web",
 ]
 default-members = [
     "plabayo-news-web",

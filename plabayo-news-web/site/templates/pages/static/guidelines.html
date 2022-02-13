@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="static-content">
+    <article>
+        {{ page.locale.strings().page.guidelines.intro }}
+
+        <section>
+            {{ page.locale.strings().page.guidelines.guidelines }}
+        </section>
+    </article>
+</div>
+{% endblock %}

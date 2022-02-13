@@ -1,36 +1,332 @@
-en:
-  site:
-    name: Plabayo News
-    locales:
-      en: "English"
-      es: "Spanish"
-      nl: "Dutch"
-    nav:
-      header:
-        news: "news"
-        past: "past"
-        comments: "comments"
-        ask: "ask"
-        submit: "submit"
-        login: "login"
-        locale: "language"
-        select: "select"
-      footer:
-        guidelines: "Guidelines"
-        faq: "FAQ"
-        api: "API"
-        security: "Security"
-        legal: "Legal"
-        contact: "Contact"
-        search: "Search"
-        build_info: "Server Build Information"
-  page:
-    security:
-      intro: >
+site:
+  name: Plabayo News
+  locales:
+    en: "English"
+    es: "Spanish"
+    nl: "Dutch"
+  nav:
+    header:
+      news: "news"
+      past: "past"
+      comments: "comments"
+      ask: "ask"
+      submit: "submit"
+      login: "login"
+      locale: "language"
+      select: "select"
+    footer:
+      guidelines: "Guidelines"
+      faq: "FAQ"
+      api: "API"
+      security: "Security"
+      legal: "Legal"
+      contact: "Contact"
+      search: "Search"
+      build_info: "Server Build Information"
+page:
+  api:
+    intro:
+      format: md
+      value: |
+          # Plabayo News API
+
+          We're planning to have a first alpha release ready of a read-only API
+          with access to _all public content_ of Plabayo News, meaning all
+          submissions, comments and public profiles.
+
+          You can already today reach out to us at [pn@plabayo.tech](mailto:pn@plabayo.tech)
+          with a formal request of this API in which you'll have to explain your motivation for the data,
+          its purpose and a bit more about you or your organization who'll consume the data.
+
+          We'll open release to this API to a couple of you as a first test
+          between Q2 an Q3 of 2022.
+  faq:
+    intro:
+      format: md
+      value: |
+        # Plabayo News FAQ
+
+        You can find all questions, answers and ongoing discussions at
+        <https://github.com/plabayo/news/discussions/categories/q-a>. On this page you find the answers
+        to the most common questions asked within our community. For your convenience we have also
+        translated them to your selected language.
+    questions:
+      format: md
+      value: |
+        ### Are there rules about submissions and comments?
+
+        You can consult them in [the Plabayo News Guidelines page](/guidelines).
+
+        ### How are stories ranked?
+
+        To be determined...
+
+        ### How is a user's karma calculated?
+
+        To be determined...
+
+        ### Do posts by users with more karma rank higher?
+
+        No.
+
+        ### Why don't I see down arrows (to down vote)?
+
+        There are no down arrows on stories. They appear on comments after users reach a certain karma threshold, but never on direct replies.
+
+        ### What kind of formatting can you use in comments?
+
+        For now nothing. In the future we might consider something
+        simple in the spirit of <http://news.ycombinator.com/formatdoc>.
+
+        ### How do I submit a question?
+
+        To be determined...
+
+        ### How do I make a link in a text submission?
+
+        You can't. This is to prevent people from submitting a link with their comments in a
+        privileged position at the top of the page. If you want to submit a link with comments,
+        just submit it, then add a regular comment.
+
+        Links within comments appear as plain text.
+
+        ### What are Ask Plabayo News and Show Plabayo News?
+
+        Ask Plabayo News (PN) lists questions and other text submissions.
+        Show Plabayo News PN) is for sharing your personal work and has special rules.
+
+        ### Why hasn't my submission appeared on Ask PN or Show PN?
+
+        All Ask PNs appear on [newest](/newest) and [asknew](/asknew),
+        and all Show HNs on [newest](/newest) and [shownew](/shownew)
+        but there is a small points threshold before a post makes it to [ask](/ask) or [show](/show).
+
+        ### What do green usernames mean?
+
+        Green indicates a new account.
+
+        ### Why are some comments faded?
+
+        Faded text means that a comment has been down voted.
+        You can read the comment in normal text by clicking on its timestamp to go to its page.
+
+        ### What does `[flagged]` mean?
+
+        Users flagged the post as breaking [the guidelines](/guidelines) or otherwise not belonging on Plabayo news.
+
+        Moderators sometimes also add `[flagged]` (though not usually on submissions), and sometimes turn flags off when they are unfair.
+
+        ### How do I flag a comment?
+
+        Click on its timestamp to go to its page, then click the 'flag' link at the top.
+        
+        There's a small karma threshold before flag links appear.
+
+        ### What does `[banned]` mean?
+
+        The post was banned by user flags, or moderators.
+
+        Banned posts aren't displayed by default, but you can see them all by turning on 'show hidden submissions' in your profile.
+
+        If you see a `[banned]` post that shouldn't be banned, you can vouch for it. Click on its timestamp to go to its page,
+        then click 'vouch' at the top. When enough users do this, the post is restored.
+        
+        There's a small karma threshold before vouch links appear.
+
+        ### What does `[deleted]` mean?
+
+        The author deleted the post outright, or asked us to. Unlike dead posts, these remain deleted even when 'show hidden submissions' is turned on.
+
+        ### Are reposts ok?
+
+        If a story has not had significant attention in the last year or so, a small number of reposts is ok.
+
+        Otherwise we bury reposts as duplicates.
+
+        Please don't delete and repost the same story.
+        Deletion is for things that shouldn't have been submitted in the first place.
+
+        ### Are paywalls ok?
+
+        It's ok to post stories from sites with paywalls that have workarounds.
+
+        In comments, it's ok to ask how to read an article and to help other users do so.
+        But please don't post complaints about paywalls. Those are off topic. More here.
+
+        ### Can I ask people to upvote my submission?
+
+        No. Users should vote for a story because they personally find it intellectually interesting,
+        not because someone has content to promote.
+        
+        We penalize or ban submissions, accounts, and sites that break this rule, so please don't.
+
+        ### Can I ask people to comment on my submission?
+
+        No, for the same reason. It's also not in your interest:
+        readers are sensitive to this and will detect it, flag it, and use unkind words like 'spam'.
+
+        ### Why can't I post a comment to a thread?
+
+        Threads are closed to new comments after two weeks,
+        or if the submission has been killed by software, moderators, or user flags.
+
+        ### Why is A ranked below B even though A has more points and is newer?
+
+        You can't derive rank from votes and time alone. See "How are stories ranked?" above.
+
+        ### How do I reset my password?
+
+        To be determined...
+
+        ### Can I make my profile public?
+
+        By default your profile is hidden and only your anonymous numerical identifier is shown.
+        However you can mark your public profile in your profile settings in which
+        case everyone can see your profile.
+
+        ### Can I change my username?
+
+        You can change your optional username. By default this username is empty
+        in which case your anonymous identifier is shown instead.
+
+        Changing this username can be done by yourself in your profile.
+
+        ### Can I delete my account?
+
+        We try not to delete entire account histories because that would gut the threads the account had participated in.
+        
+        However, we care about protecting individual users and take care of privacy requests every day,
+        so if we can help, please email [pn@plabayo.tech](mailto:pn@plabayo.tech).
+        
+        We don't want anyone to get in trouble from anything they posted to Plabayo News.
+
+        The easiest you can do for yourself immediately is to mark your profile as hidden.
+        This ensures your profile information is wiped and only your anonymous username is shown.
+
+        ### My IP address seems to be banned. How can I unban it?
+
+        Please email to [security@plabayo.tech](mailto:security@plabayo.tech).
+
+  guidelines:
+    intro:
+      format: md
+      value: |
+        # Plabayo News Guidelines
+
+        On this page you find a summary of the guidelines which the moderators
+        adhere to in order to keep this a respectful place to grow together.
+
+        Plabayo News only works as well as its community works. If you would like to add things
+        to the guidelines, change or remove existing guidelines, than please start a discussion
+        or contribute to an ongoing discussion at <https://github.com/plabayo/news/discussions/categories/ideas>.
+    guidelines:
+      format: md
+      value: |
+        ### What to Submit
+
+        On-Topic: Anything that other caregivers and other community members would find interesting.
+
+        That includes more parenting guides and hands-on articles.
+        If you had to reduce it to a sentence, the answer might be:
+        anything that gratifies one's intellectual and emotional curiosity.
+
+        The goal is for us to grow on all levels, and help us to be kind to ourselves and one another,
+        with respect, an open mind and the space for all of us to grow individually as well as together.
+
+        Off-Topic: Most stories about politics, or crime, or sports, unless they're evidence of some interesting new phenomenon.
+        Videos of pratfalls or disasters, or cute animal pictures.
+        
+        If they'd cover it on TV news, it's probably off-topic.
+
+        ### In Submissions
+
+        - Please don't do things to make titles stand out, like using uppercase or exclamation points,
+          or saying how great an article is. It's implicit in submitting something that you think it's important.
+        - Please submit the original source.
+          - If a post reports on something found on another site, submit the latter.
+          - If the title includes the name of the site, please take it out, because the site name will be displayed after the link.
+        - If you submit a video or pdf, please warn us by appending `[video]` or `[pdf]` to the title.
+        - If the title contains a gratuitous number or number + adjective, we'd appreciate it if you'd crop it.
+          - E.g. translate "10 Ways To Do X" to "How To Do X," and "14 Amazing Ys" to "Ys."
+          - Exception: when the number is meaningful, e.g. "The 5 Platonic Solids."
+        - Otherwise please use the original title, unless it is misleading or linkbait; don't editorialize.
+        - Please don't post on Plabayo NEws to ask or tell us something.
+          - Instead start or participate in a discussion at <https://github.com/plabayo/news/discussions/categories/general>.
+        - Please don't delete and repost.
+          - Deletion is for things that shouldn't have been submitted in the first place.
+        - Please don't use Plabayo News primarily for promotion.
+          - It's ok to post your own stuff occasionally, but the primary use of the site should be for curiosity.
+        - Don't solicit upvotes, comments, or submissions.
+          - Users should vote and comment when they run across something they personally find interesting—not for promotion.
+
+        ### In Comments
+
+        - Be kind.
+        - Don't be snarky.
+        - Have curious conversation;
+        - don't cross-examine.
+        - Please don't fulminate.
+        - Please don't sneer, including at the rest of the community.
+        - Comments should get more thoughtful and substantive, not less, as a topic gets more divisive.
+        - When disagreeing, please reply to the argument instead of calling names.
+          - Don't say "That is idiotic; 1 + 1 is 2, not 3", instead say "1 + 1 is 2, not 3."
+        - Please respond to the strongest plausible interpretation of what someone says,
+          not a weaker one that's easier to criticize. Assume good faith.
+        - Eschew flamebait. Avoid unrelated controversies and generic tangents.
+        - Please don't post shallow dismissals, especially of other people's work.
+          - A good critical comment teaches us something.
+        - Please don't use Plabayo News for political or ideological battle. It tramples curiosity.
+        - Please don't comment on whether someone read an article.
+          - "Did you even read the article? It mentions that" can be shortened to "The article mentions that."
+        - Please don't pick the most provocative thing in an article or post to complain about in the thread.
+          - Find something interesting to respond to instead.
+        - Throwaway accounts are ok for sensitive information,
+          but please don't create accounts routinely.
+          - Community members on Plabayo News should have an identity that others can relate to.
+        - Please don't use uppercase for emphasis.
+          - If you want to emphasize a word or phrase, put `*asterisks*` around it and it will get italicized.
+        - Please don't post insinuations about astroturfing, shilling, bots, brigading,
+          foreign agents and the like.
+          - It degrades discussion and is usually mistaken.
+          - If you're worried about abuse, email [pn@plabayo.tech](mailto:pn@plabayo.tech) and we'll look at the data.
+        - Please don't complain that a submission is inappropriate.
+          - If a story is spam or off-topic, flag it. Don't feed egregious comments by replying; flag them instead.
+          - If you flag, please don't also comment that you did.
+        - Please don't complain about tangential annoyances—things like article or website formats,
+          name collisions, or back-button breakage. They're too common to be interesting.
+        - Please don't comment about the voting on comments. It never does any good, and it makes boring reading.
+  security:
+    intro:
+      format: md
+      value: |
         # Plabayo News Security
 
         If you find a security hole, please let us know at [security@plabayo.tech](mailto:security@plabayo.tech).
 
         We try to respond (with fixes!) as soon as possible, and really appreciate the help.
-      reports: >
-        No security holes have been disclosed to us.
+
+        Active security inquiries are visible to Plabayo News maintainers and you as the reporter
+        and are followed up in <https://github.com/plabayo/news/security/advisories>, where a private
+        discussion can be continued.
+
+        No security holes have been disclosed to us. If you do find any, please do contact us,
+        and help your fellow community member.
+  unknown:
+    content:
+      format: md
+      value: |
+        # No page is to be found here
+
+        ## Please do not share
+
+        > It's just a 404 error
+
+        What you're looking for may have been misplaced in long term memory.
+        Why don't you catch up to date with [the latest news](/) instead?
+
+        And while you're at it, perhaps take some minutes for some personal me-time,
+        whatever that means for you. You could grab a glass of water. Or perhaps some tea?
+        What about a bit of meditation? The options are endless if only you
+        desire to see them.
+
+        Take care and be kind <3
