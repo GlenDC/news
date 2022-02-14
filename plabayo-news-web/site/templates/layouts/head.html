@@ -1,7 +1,13 @@
-<meta charset="utf-8" />
+<meta charset="utf-8">
 
 <meta name="referrer" content="origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="application-name" content="{{ page.locale.strings().site.name }}">
+<meta name="author" content="plabayo.tech">
+<meta name="generator" content="github.com/plabayo/news v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}">
+<meta name="description" content="{{ page.locale.strings().site.description }}">
+<meta name="keywords" content="{{ page.locale.strings().site.keywords }}">
 
 <link rel="stylesheet" href="/assets/style.css?{{ site_info.version }}">
 <!-- site works without JS, JS is optional and only is there for convenience -->

@@ -8,14 +8,21 @@
  |_|   |_|\__,_|_.__/ \__,_|\__, |\___/  |_| \_|\___| \_/\_/ |___/
                             |___/                                 
 
+Page generated at {{ page.gen_date_time }}
+using the Plabayo News Server v{{ site_info.build_semver }}-{{ site_info.git_sha_short }} ({{ site_info.build_date }}).
+
 Do you like poking around in our code? Help your community members
 and consider contributing to Plabayo News at {{ site_info.repository }}
 
 Plabayo News is sponsored and maintained by Plabayo.
 Learn more about us and our other projects at https://plabayo.tech
+
+Licensed under The GNU General Public License v3.0
+See {{ site_info.repository }}/blob/main/LICENSE for the license details.
+
 -->
 
-<html>
+<html lang="{{ page.locale }}">
 
 <head>
     {% include "layouts/head.html" %}

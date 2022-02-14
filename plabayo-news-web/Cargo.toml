@@ -30,6 +30,7 @@ askama = "0"
 anyhow = "1"
 fnv = "1"
 lazy_static = "1"
+chrono = "0"
 
 [build-dependencies]
 plabayo-news-builder = { path = "../plabayo-news-builder" }

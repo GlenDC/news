@@ -440,90 +440,57 @@ const {}: Strings = Strings {{
     // for each locale string...
     for pair in pairs {
         let current_layer = pair.path.len() - 1;
-        match current_layer.cmp(&previous_layer) {
-            std::cmp::Ordering::Greater => {
-                // handle case in case we are indenting more (creating a child)
-                while current_layer > previous_layer {
-                    let key = &pair.path[previous_layer];
-                    w.write_all(
-                        format!(
-                            "{}{}: Strings{} {{
-",
-                            "    ".repeat(previous_layer + 1),
-                            key.to_case(Case::Snake),
-                            pair.path[..=previous_layer]
-                                .iter()
-                                .map(|s| s.to_case(Case::Pascal))
-                                .join(""),
-                        )
-                        .as_bytes(),
-                    )?;
-                    previous_layer += 1;
+
+        // prior to writing key,
+        // we need to ensure we're within the correct struct constructor
+        let mut overlap_layer = 0;
+        if let Some(previous_path) = previous_path {
+            for (key_a, key_b) in pair.path.iter().zip(previous_path) {
+                if key_a != key_b {
+                    break;
                 }
-            }
-            std::cmp::Ordering::Less => {
-                // as well as the case where we indenting less (ending a child)
-                while current_layer < previous_layer {
-                    previous_layer -= 1;
-                    w.write_all(
-                        format!(
-                            "{}}},
-",
-                            "    ".repeat(previous_layer + 1)
-                        )
-                        .as_bytes(),
-                    )?;
-                }
-            }
-            std::cmp::Ordering::Equal => {
-                // and finally handle the cases where we go from one nested child to another
-                let mut overlap_layer = 0;
-                if let Some(previous_path) = previous_path {
-                    for (key_a, key_b) in pair.path.iter().zip(previous_path) {
-                        if key_a != key_b {
-                            break;
-                        }
-                        overlap_layer += 1;
-                    }
-                    if overlap_layer < previous_layer {
-                        for idx in 0..(previous_layer - overlap_layer) {
-                            w.write_all(
-                                format!(
-                                    "{}}},
-",
-                                    "    ".repeat(previous_layer - idx)
-                                )
-                                .as_bytes(),
-                            )?;
-                        }
-                        while overlap_layer < previous_layer {
-                            let key = &pair.path[overlap_layer];
-                            w.write_all(
-                                format!(
-                                    "{}{}: Strings{} {{
-",
-                                    "    ".repeat(overlap_layer + 1),
-                                    key.to_case(Case::Snake),
-                                    pair.path[..=overlap_layer]
-                                        .iter()
-                                        .map(|s| s.to_case(Case::Pascal))
-                                        .join(""),
-                                )
-                                .as_bytes(),
-                            )?;
-                            overlap_layer += 1;
-                        }
-                    }
-                }
+                overlap_layer += 1;
             }
         }
+        if overlap_layer < previous_layer {
+            for idx in 0..(previous_layer - overlap_layer) {
+                w.write_all(
+                    format!(
+                        "{}}},
+",
+                        "    ".repeat(previous_layer - idx)
+                    )
+                    .as_bytes(),
+                )?;
+            }
+        }
+        while overlap_layer < current_layer {
+            let key = &pair.path[overlap_layer];
+            w.write_all(
+                format!(
+                    "{}{}: Strings{} {{
+",
+                    "    ".repeat(overlap_layer + 1),
+                    key.to_case(Case::Snake),
+                    pair.path[..=overlap_layer]
+                        .iter()
+                        .map(|s| s.to_case(Case::Pascal))
+                        .join(""),
+                )
+                .as_bytes(),
+            )?;
+            overlap_layer += 1;
+        }
+
+        assert!(overlap_layer == current_layer);
+
         // write the actual locale string...
-        let key = &pair.path[previous_layer];
+        let key = &pair.path[current_layer];
         w.write_all(
             format!(
                 r#################"{}{}: {},
 "#################,
-                "    ".repeat(previous_layer + 1),
+                "    ".repeat(current_layer + 1),
                 key.to_case(Case::Snake),
                 pair.value
             )
@@ -531,6 +498,7 @@ const {}: Strings = Strings {{
         )?;
         // keep track of the previous path to be handle the more complex nesting cases
         previous_path = Some(&pair.path);
+        previous_layer = current_layer;
     }
     // add all the final curly brackets... including the last one
     while previous_layer > 0 {

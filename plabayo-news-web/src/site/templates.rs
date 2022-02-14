@@ -16,12 +16,15 @@
 
 use std::collections::BTreeMap;
 
+use chrono::{DateTime, Utc};
+
 use crate::site::l18n::locales::Locale;
 
 pub struct PageState<'a> {
     pub locale: Locale,
     pub path: &'a str,
     pub query: Option<PageQuery<'a>>,
+    pub gen_date_time: DateTime<Utc>,
 }
 
 impl<'a> PageState<'a> {
@@ -34,6 +37,7 @@ impl<'a> PageState<'a> {
             locale,
             path,
             query: query.map(|params| PageQuery { params }),
+            gen_date_time: chrono::offset::Utc::now(),
         }
     }
 

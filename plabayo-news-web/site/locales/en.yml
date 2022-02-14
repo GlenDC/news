@@ -1,5 +1,7 @@
 site:
   name: Plabayo News
+  description: "A conscious social news website focusing on parenting, spirituality, science and psychology."
+  keywords: "news, social network, oss, open source, foss, community driven, community, privacy preserving"
   locales:
     en: "English"
     es: "Spanish"
