@@ -35,4 +35,4 @@ List general components of the `plabayo/news` codebase that this PR will affect:
 ## Code of Conduct
 
 By submitting this pull request (PR), I Agree agree to follow this project's
-[Code of Conduct](https://github.com/plabayo/news/blob/main/CONTRIBUTING.md#contributor-code-of-conduct).
+[Code of Conduct](https://github.com/plabayo/news/blob/main/CODE_OF_CONDUCT.md).
