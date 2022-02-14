@@ -1521,6 +1521,7 @@ dependencies = [
  "cached",
  "env_logger",
  "fnv",
+ "futures",
  "lazy_static",
  "plabayo-news-builder",
  "static-files",

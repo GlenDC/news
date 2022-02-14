@@ -3,6 +3,7 @@ use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
+use itertools::Itertools;
 
 use crate::i18n::config::StaticPages;
 use crate::i18n::locales::Storage;
@@ -40,6 +41,14 @@ pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &StaticPages) ->
             file_path.display()
         )
     })?;
+
+    generate_pages_is_static_root(&file, &templates[..], not_found_template.as_str())
+        .with_context(|| {
+            format!(
+                "generate pages 'is_static_root' pub utility {}",
+                file_path.display()
+            )
+        })?;
 
     generate_pages_static_pages(&file, storage, &templates[..], not_found_template.as_str())
         .with_context(|| {
@@ -107,6 +116,7 @@ fn generate_pages_imports(mut w: impl std::io::Write) -> Result<()> {
         b"use actix_web::{http::StatusCode, HttpResponse};
 use lazy_static::lazy_static;
 
+use crate::site::assets;
 use crate::site::l18n::locales::Locale;
 use crate::site::SITE_INFO;
 
@@ -261,6 +271,37 @@ lazy_static! {{
 ",
         )?;
     }
+
+    Ok(())
+}
+
+fn generate_pages_is_static_root(
+    mut w: impl std::io::Write,
+    templates: &[String],
+    not_found: &str,
+) -> Result<()> {
+    w.write_all(
+        b"pub fn is_static_root(root: &str) -> bool {
+    match root.to_lowercase().as_str() {
+        assets::ROOT => true,
+        ",
+    )?;
+    w.write_all(
+        templates
+            .iter()
+            .filter(|name| name.as_str() != not_found)
+            .map(|name| format!("PAGE_{}_ENDPOINT", name.to_case(Case::ScreamingSnake)))
+            .join(" | ")
+            .as_bytes(),
+    )?;
+    w.write_all(
+        b" => true,
+        _ => false,
+    }
+}
+
+",
+    )?;
 
     Ok(())
 }

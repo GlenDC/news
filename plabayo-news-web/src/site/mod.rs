@@ -5,6 +5,7 @@ use lazy_static::lazy_static;
 
 pub mod assets;
 pub mod l18n;
+pub mod middleware;
 pub mod pages;
 pub mod templates;
 
