@@ -3,7 +3,6 @@ use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
-use itertools::Itertools;
 
 use crate::i18n::config::StaticPages;
 use crate::i18n::locales::Storage;
@@ -282,22 +281,26 @@ fn generate_pages_is_static_root(
 ) -> Result<()> {
     w.write_all(
         b"pub fn is_static_root(root: &str) -> bool {
-    match root.to_lowercase().as_str() {
-        assets::ROOT => true,
-        ",
+    matches!(
+        root.to_lowercase().as_str(),
+        assets::ROOT
+",
     )?;
-    w.write_all(
-        templates
-            .iter()
-            .filter(|name| name.as_str() != not_found)
-            .map(|name| format!("PAGE_{}_ENDPOINT", name.to_case(Case::ScreamingSnake)))
-            .join(" | ")
+    for template in templates {
+        if template.as_str() == not_found {
+            continue;
+        }
+        w.write_all(
+            format!(
+                "            | PAGE_{}_ENDPOINT
+",
+                template.to_case(Case::ScreamingSnake)
+            )
             .as_bytes(),
-    )?;
-    w.write_all(
-        b" => true,
-        _ => false,
+        )?
     }
+    w.write_all(
+        b"    )
 }
 
 ",

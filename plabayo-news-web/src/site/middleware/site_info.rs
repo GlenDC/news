@@ -51,6 +51,7 @@ where
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
     type Error = Error;
+    #[allow(clippy::type_complexity)]
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -84,5 +85,5 @@ const HEADER_BUILD_DATE: &str = "x-plabayo-news-build-date";
 lazy_static! {
     static ref HEADER_BUILD_VERSION_VALUE: String =
         format!("v{}-{}", SITE_INFO.build_semver, SITE_INFO.git_sha_short);
-    static ref HEADER_BUILD_DATE_VALUE: String = format!("{}", SITE_INFO.build_date);
+    static ref HEADER_BUILD_DATE_VALUE: String = SITE_INFO.build_date.to_string();
 }

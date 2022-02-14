@@ -50,6 +50,7 @@ where
     type Request = ServiceRequest;
     type Response = ServiceResponse<B>;
     type Error = Error;
+    #[allow(clippy::type_complexity)]
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -63,8 +64,7 @@ where
                     CacheControl(vec![CacheDirective::NoCache])
                 } else if let Some(CacheDirective::MaxAge(age)) = cc
                     .iter()
-                    .filter(|dir| matches!(dir, CacheDirective::MaxAge(_)))
-                    .next()
+                    .find(|dir| matches!(dir, CacheDirective::MaxAge(_)))
                 {
                     if *age == 0 {
                         CacheControl(vec![CacheDirective::NoCache])
@@ -94,7 +94,7 @@ where
 }
 
 fn get_cache_control_directive_for_path(path: &str) -> CacheControl {
-    CacheControl(match path.split("/").skip(1).next() {
+    CacheControl(match path.split('/').nth(1) {
         None => vec![CacheDirective::NoCache],
         Some(root) => {
             if pages::is_static_root(root) {
