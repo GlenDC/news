@@ -1,24 +1,37 @@
 <!DOCTYPE html>
+
+<!--
+  ____  _       _                         _   _                   
+ |  _ \| | __ _| |__   __ _ _   _  ___   | \ | | _____      _____ 
+ | |_) | |/ _` | '_ \ / _` | | | |/ _ \  |  \| |/ _ \ \ /\ / / __|
+ |  __/| | (_| | |_) | (_| | |_| | (_) | | |\  |  __/\ V  V /\__ \
+ |_|   |_|\__,_|_.__/ \__,_|\__, |\___/  |_| \_|\___| \_/\_/ |___/
+                            |___/                                 
+
+Do you like poking around in our code? Help your community members
+and consider contributing to Plabayo News at {{ site_info.repository }}.
+-->
+
 <html>
 
-    <head>
-        {% include "layouts/head.html" %}
+<head>
+    {% include "layouts/head.html" %}
 
-        <title>{{ page.locale.strings().site.name }}</title>
+    <title>{{ page.locale.strings().site.name }}</title>
 
-        {% block head %}{% endblock %}
-    </head>
+    {% block head %}{% endblock %}
+</head>
 
-    <body class="clr-primary">
-        <div id="wrapper">
-            {% include "layouts/header.html" %}
-            <main>
-                <div id="wrapper-content">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
-            {% include "layouts/footer.html" %}
-        </div>
-    </body>
+<body class="clr-primary">
+    <div id="wrapper">
+        {% include "layouts/header.html" %}
+        <main>
+            <div id="wrapper-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        {% include "layouts/footer.html" %}
+    </div>
+</body>
 
 </html>

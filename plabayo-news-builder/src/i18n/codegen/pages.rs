@@ -1,9 +1,26 @@
+// Plabayo News
+// Copyright (C) 2021  Glen Henri J. De Cauwsemaecker
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 use std::fs::{self, File};
 use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
 
+use crate::i18n::codegen::common::generate_copyright_file_header;
 use crate::i18n::config::StaticPages;
 use crate::i18n::locales::Storage;
 
@@ -15,6 +32,13 @@ pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &StaticPages) ->
 
     let (not_found_template, templates) = get_templates(&cfg.path, &cfg.not_found)
         .with_context(|| format!("get templates for result at {}", file_path.display()))?;
+
+    generate_copyright_file_header(&file).with_context(|| {
+        format!(
+            "generate locales module copyright (header) in {}",
+            file_path.display()
+        )
+    })?;
 
     generate_pages_mod_docs(&file).with_context(|| {
         format!(

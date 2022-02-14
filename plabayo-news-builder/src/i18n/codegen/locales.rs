@@ -1,3 +1,19 @@
+// Plabayo News
+// Copyright (C) 2021  Glen Henri J. De Cauwsemaecker
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 use std::fs::File;
 use std::path::Path;
 
@@ -5,11 +21,19 @@ use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
 use itertools::Itertools;
 
+use crate::i18n::codegen::common::generate_copyright_file_header;
 use crate::i18n::locales::{Storage, StringValuePathPair};
 
 pub fn generate_locales(file_path: &Path, storage: &Storage) -> Result<()> {
     let file = File::create(file_path)
         .with_context(|| format!("create locales rust file at {}", file_path.display()))?;
+
+    generate_copyright_file_header(&file).with_context(|| {
+        format!(
+            "generate locales module copyright (header) in {}",
+            file_path.display()
+        )
+    })?;
 
     generate_locales_mod_docs(&file).with_context(|| {
         format!(
