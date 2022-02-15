@@ -1494,6 +1494,10 @@ name = "plabayo-news-api"
 version = "0.0.1"
 
 [[package]]
+name = "plabayo-news-auth"
+version = "0.1.0"
+
+[[package]]
 name = "plabayo-news-builder"
 version = "0.0.1"
 dependencies = [

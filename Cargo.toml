@@ -2,6 +2,7 @@
 
 members = [
     "plabayo-news-sendmail",
+    "plabayo-news-auth",
     "plabayo-news-api",
     "plabayo-news-builder",
     "plabayo-news-data",
