@@ -20,6 +20,7 @@ use actix_web::dev::HttpServiceFactory;
 use actix_web::{error::ErrorInternalServerError, web, HttpResponse, Result};
 use askama::Template;
 
+use crate::site::extractors::Session;
 use crate::site::l18n::locales::Locale;
 use crate::site::l18n::pages::static_response;
 use crate::site::templates::pages;
@@ -31,11 +32,9 @@ pub fn factory() -> impl HttpServiceFactory + 'static {
 async fn serve_page(
     path: web::Path<(String,)>,
     query: web::Query<BTreeMap<String, String>>,
+    session: Session,
 ) -> Result<HttpResponse> {
-    let locale = match query.get("loc") {
-        None => Locale::default(),
-        Some(s) => Locale::from(s.as_str()),
-    };
+    let locale = session.locale();
     match path.into_inner().0.to_lowercase().as_str() {
         "" | "home" | "index" => page_news(locale, "/").await,
         "new" | "news" => page_news(locale, "/news").await,

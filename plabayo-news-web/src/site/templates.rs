@@ -43,10 +43,7 @@ impl<'a> PageState<'a> {
 
     pub fn params_for(&self, path: &str, ignore: &str) -> BTreeMap<&str, &str> {
         let params_to_ignore: Vec<&str> = ignore.split('&').collect();
-        let mut params = BTreeMap::new();
-        if !params_to_ignore.contains(&"loc") {
-            params.insert("loc", self.locale.as_str());
-        }
+        let mut params: BTreeMap<&str, &str> = BTreeMap::new();
         if self.path == path {
             if let Some(query) = self.query.as_ref() {
                 for (key, value) in query

@@ -211,7 +211,7 @@ pub enum Locale {
     )?;
 
     w.write_all(
-        b"    pub fn as_str(&self) -> &str {
+        b"    pub fn as_str(&self) -> &'static str {
         match self {",
     )?;
     for locale in storage.all_locales() {
@@ -265,15 +265,16 @@ pub enum Locale {
     // 5. impl conversation from str, for our enum type
 
     w.write_all(
-        b"impl From<&str> for Locale {
-    fn from(s: &str) -> Self {
+        b"impl TryFrom<&str> for Locale {
+    type Error = anyhow::Error;
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         match s.to_lowercase().trim() {
 ",
     )?;
     for locale in storage.all_locales() {
         w.write_all(
             format!(
-                r#"            "{}" => Self::{},
+                r#"            "{}" => Ok(Self::{}),
 "#,
                 locale.to_lowercase().trim(),
                 locale.to_case(Case::Pascal)
@@ -282,7 +283,7 @@ pub enum Locale {
         )?;
     }
     w.write_all(
-        b"            _ => Locale::default(),
+        b"            _ => Err(anyhow::anyhow!(\"str '{}' cannot be converted to Locale\", s)),
 ",
     )?;
     w.write_all(

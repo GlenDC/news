@@ -26,26 +26,6 @@
             <li class="{{ page.class_nav_button_for("/login") }}">
                 <a href="/login{{ page.page_query_for("/login", "") }}">{{ page.locale.strings().site.nav.header.login }}</a>
             </li>
-            <!-- TODO: enable again once we figure out how to use and style it
-            <li>
-                <form method="get" action="{{ page.path }}" id="site_header_locale_form">
-                    <label for="locale">{{ page.locale.strings().site.nav.header.locale }}:</label>
-                    <select name="loc" id="locale" form="site_header_locale_form">
-                    {% for (locale, locale_name) in page.locale.strings().site.locales.iter() %}
-                        {% if page.locale == locale %}
-                        <option value="{{ locale }}" selected="selected">{{ locale_name }}</option>
-                        {% else %}
-                        <option value="{{ locale }}">{{ locale_name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                    </select>
-                    {% for (key, value) in page.params_current("loc") %}
-                    <input id="hidden_{{ key }}" type="hidden" name="{{ key }}" value="{{ value }}"/>
-                    {% endfor %}
-                    <input type="submit" value="{{ page.locale.strings().site.nav.header.select }}" class="select" />
-                </form>
-            </li>
-            -->
         </ul>
     </nav>
 </header>

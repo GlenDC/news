@@ -20,6 +20,7 @@ use fnv::FnvHasher;
 use lazy_static::lazy_static;
 
 pub mod assets;
+pub mod extractors;
 pub mod l18n;
 pub mod middleware;
 pub mod pages;
