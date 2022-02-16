@@ -26,24 +26,24 @@ pub struct Headers {
 
 impl Headers {
     fn from_request(req: &HttpRequest) -> Headers {
+        const HEADER_ACCEPT_LANGUAGE_VALUE_ANY: &str = "*";
+
         let locale = req
             .headers()
             .get(ACCEPT_LANGUAGE)
             .and_then(|hv| hv.to_str().ok())
-            .unwrap_or_else(|| Locale::default().as_str())
-            .split(',')
-            .map(|language| {
-                language
-                    .trim()
-                    .split('-')
-                    .next()
-                    .unwrap_or(language)
-                    .split('_')
-                    .next()
-                    .unwrap_or(language)
+            .unwrap_or(HEADER_ACCEPT_LANGUAGE_VALUE_ANY)
+            .split(&[',', '-', '.', ';'])
+            .map(|language| language.trim())
+            .filter_map(|s| {
+                if s == HEADER_ACCEPT_LANGUAGE_VALUE_ANY {
+                    Some(Locale::default())
+                } else {
+                    Locale::try_from(s).ok()
+                }
             })
-            .filter_map(|s| Locale::try_from(s).ok())
             .next();
+
         Headers { locale }
     }
 }
