@@ -1,7 +1,8 @@
 <footer class="clr-primary-bg-alt">
     <nav id="nav-footer">
         <div id="nav-footer-info">
-            {{ page.locale.strings().site.nav.footer.build_info }}: <a href="{{ site_info.repository }}/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
+            {{ page.locale.strings().site.nav.footer.creator_message }}
+            — {{ page.locale.strings().site.nav.footer.build_info }}: <a href="{{ site_info.repository }}/tree/{{ site_info.git_sha }}">v{{ site_info.build_semver }}-{{ site_info.git_sha_short }}</a> ({{ site_info.build_date }})
         </div>
         <div id="nav-footer-buttons">
             <ul class="nav-buttons">

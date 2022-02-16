@@ -27,6 +27,7 @@ site:
       contact: "Contact"
       search: "Search"
       build_info: "Server Build Information"
+      creator_message: "Developed with ♥ by plabayo.tech"
 page:
   api:
     intro:
