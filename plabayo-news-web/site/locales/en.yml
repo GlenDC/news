@@ -6,6 +6,7 @@ site:
     en: "English"
     es: "Spanish"
     nl: "Dutch"
+    de: "German"
   nav:
     header:
       news: "news"

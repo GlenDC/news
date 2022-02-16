@@ -1,0 +1,7 @@
+site:
+  name: Plabayo Nachrichten
+  locales:
+    en: "Englisch"
+    es: "Spanisch"
+    nl: "Niederländisch"
+    de: "Deutsch"

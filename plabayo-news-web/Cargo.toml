@@ -10,7 +10,7 @@ name = "plabayo-news-web"
 path = "./src/main.rs"
 
 [package.metadata.i18n]
-locales = [ "en", "es", "nl" ]
+locales = [ "en", "es", "nl", "de" ]
 path = "./site/locales"
 out = "./src/site/l18n"
 
