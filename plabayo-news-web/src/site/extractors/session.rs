@@ -31,14 +31,14 @@ impl Headers {
             .get(ACCEPT_LANGUAGE)
             .and_then(|hv| hv.to_str().ok())
             .unwrap_or_else(|| Locale::default().as_str())
-            .split(",")
+            .split(',')
             .map(|language| {
                 language
                     .trim()
-                    .split("-")
+                    .split('-')
                     .next()
                     .unwrap_or(language)
-                    .split("_")
+                    .split('_')
                     .next()
                     .unwrap_or(language)
             })
