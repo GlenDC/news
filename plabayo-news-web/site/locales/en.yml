@@ -21,13 +21,14 @@ site:
     footer:
       guidelines: "Guidelines"
       faq: "FAQ"
+      contribute: "Contribute"
       api: "API"
       security: "Security"
       legal: "Legal"
       contact: "Contact"
       search: "Search"
       build_info: "Server Build Information"
-      creator_message: "Developed with ♥ by plabayo.tech"
+      creator_message: "Made with ♥ by plabayo.tech"
 page:
   api:
     intro:
@@ -211,6 +212,138 @@ page:
         ### My IP address seems to be banned. How can I unban it?
 
         Please email to [security@plabayo.tech](mailto:security@plabayo.tech).
+
+  contribute:
+    intro:
+      format: md
+      value: |
+        # Plabayo News Contributor Guidelines
+
+        Plabayo News is developed, maintained and sponsored by [Plabayo](https://plabayo.tech).
+        In order for Plabayo News to thrive fully it relies upon its community for a variety of tasks:
+
+        - Any community member can submit news (articles), questions and projects to show
+          (see also [the Plabayo News Guidelines](/guidelines).
+        - Community members with sufficient Karma (see [FAQ](/faq)) can also flag submissions and comments,
+          which can result in automated actions or at the very least bring it to the attention of a moderator.
+        - Any community member can become a translator, either as a one-off contribution or becoming
+          a regular translator for their language(s) of choice, see [the Translators section](#translators) below for more info.
+        - Technical community members can also contribute to the codebase of Plabayo News as found on
+          <https://github.com/plabayo/news>. Similar to translators it can be a one-off contribution or you could become
+          a regular contributor. See [the Developers section](#developers) below for more info.
+        - Any community member can also bring ideas to the table or engage in ongoing discussions
+          at <https://github.com/plabayo/news/discussions/categories/ideas>
+          and <https://github.com/plabayo/news/discussions/categories/general>.
+        - Any community member can help other community members with their questions by answering questions
+          asked at <https://github.com/plabayo/news/discussions/categories/q-a>. Questions with sufficient interest
+          also appear on [our FAQ page](/faq).
+
+    translators:
+      intro:
+        format: md
+        value: |
+          ## <a id="translators">Translators</a>
+
+          Translators have a GitHub discussions space at <https://github.com/plabayo/news/discussions/categories/translators>
+          which can be used for open-ended conversations between translators, exchanging ideas related to translations,
+          translation proposals and questions regarding translations.
+
+          The translations can be found in <https://github.com/plabayo/news/tree/main/plabayo-news-web/site/locales>
+          and are bundled in a single yaml file per locale. For the sake of simplicity we are for now not focussing on region-specific
+          locales (e.g. we consider en-US and en-GB one and the same for now). We can always come back to this later if
+          the size of the community and the human capacity it brings along with it.
+
+          The default locale for the Plabayo News is English (`en`). Any locale that cannot be found in another locale's file
+          will fall back to the English version. The English version is considered to be the truth of source and the other locales
+          have to sync in function of it.
+
+          The content of static pages, such as the page you're currently reading, are written in markdown format.
+          These locales are written as an object:
+
+          ```yaml
+          name:
+            format: md
+            value: |
+              This _is_ a Markdown Paragraph!
+
+              Please see <https://spec.commonmark.org/0.30/> for the full specification
+              of the Markdown specification used by this library.
+          ```
+
+          This in contract with regular locales that are written as:
+
+          ```yaml
+          name: "a simple plain-text value"
+          ```
+
+          Contributions to existing locales are always appreciated and can be done so without prior communication.
+          It can be done by forking our repository on GitHub, adding your contributions and opening a new Pull Request.
+          More about it can be read at <https://github.com/plabayo/news/blob/main/CONTRIBUTING.md#contributing>.
+
+          > Note that if you're doing simple translations you do not need to install Rust and run Plabayo News locally,
+          > those can be easily evaluated just by reading.
+
+          In case you want to support a new locale (e.g. Chinese), you might want to open a discussion about it first
+          on <https://github.com/plabayo/news/discussions/categories/translators> with your proposal and sufficient
+          motivation attached to it. We also ask that if you wish to add support for a new language that you also
+          volunteer as a maintainer, such that its translations stay up to date with the remainder of the website.
+          Once Plabayo News is stable we do not expect to require translation updates that often, so the volunteer job
+          should be very limited in terms of the time it requires from you.
+
+          We thank you for your services.
+
+          ### Translator Credits
+
+      credits:
+        format: md
+        value: |
+          - `en`:
+            - [Glen Henri J. De Cauwsemaecker][glendc]
+          - `nl`:
+            - [Glen Henri J. De Cauwsemaecker][glendc]
+          - `es`:
+            - [Elizabeth C. Gonzales Belsuzarri][elizagb]
+
+          [glendc]: https://glendc.com
+          [elizagb]: https://www.linkedin.com/in/elizabeth-gb/
+
+      tail:
+        format: md
+        value: |
+          We are currently looking for French and German translators,
+          you can reach out to us at <https://github.com/plabayo/news/discussions/categories/translators>
+          or by sending us a mail at [pn@plabayo.tech](mailto:pn@plabayo.tech) if you would like to be the maintainer
+          for any of these languages.
+
+    developers:
+      intro:
+        format: md
+        value: |
+          ## <a id="developers">Developers</a>
+
+          Developers have a GitHub discussions space at <https://github.com/plabayo/news/discussions/categories/developers>
+          which can be used for open-ended conversations between developers, exchanging ideas related to the codebase and
+          the technology in context of it, technical proposals and questions regarding the code or its technology.
+
+          The codebase can be found in <https://github.com/plabayo/news> and is written mostly in Rust.
+          There is also a bit of CSS for the markup of the website and some HTML for the layout of it.
+          In the _README_ of that codebase you can find some high level technical documentation as well.
+          For documentation directly related to the code you can check the cargo docs for the relevant packages.
+
+          If you wish to contribute and want to know how you can start by
+          reading the contributor guidelines at <https://github.com/plabayo/news/blob/main/CONTRIBUTING.md#contributing>.
+
+          We thank you for your services.
+
+          ### Developer Credits
+
+      credits:
+        format: md
+        value: |
+          - Maintainer:
+            - [Glen Henri J. De Cauwsemaecker][glendc]
+
+          [glendc]: https://glendc.com
 
   guidelines:
     intro:

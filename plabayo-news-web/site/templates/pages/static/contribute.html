@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="static-content">
+    <article>
+        {{ page.locale.strings().page.contribute.intro }}
+        {{ page.locale.strings().page.contribute.translators.intro }}
+        {{ page.locale.strings().page.contribute.translators.credits }}
+        {{ page.locale.strings().page.contribute.translators.tail }}
+        {{ page.locale.strings().page.contribute.developers.intro }}
+        {{ page.locale.strings().page.contribute.developers.credits }}
+    </article>
+</div>
+{% endblock %}
