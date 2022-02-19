@@ -1533,6 +1533,7 @@ dependencies = [
  "futures",
  "lazy_static",
  "plabayo-news-builder",
+ "plabayo-news-data",
  "static-files",
  "vergen",
 ]

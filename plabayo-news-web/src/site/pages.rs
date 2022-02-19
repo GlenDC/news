@@ -20,6 +20,8 @@ use actix_web::dev::HttpServiceFactory;
 use actix_web::{error::ErrorInternalServerError, web, HttpResponse, Result};
 use askama::Template;
 
+use plabayo_news_data::models::User;
+
 use crate::site::extractors::Session;
 use crate::site::l18n::locales::Locale;
 use crate::site::l18n::pages::static_response;
@@ -35,17 +37,18 @@ async fn serve_page(
     session: Session,
 ) -> Result<HttpResponse> {
     let locale = session.locale();
+    let user = session.user();
     match path.into_inner().0.to_lowercase().as_str() {
-        "" | "home" | "index" => page_news(locale, "/").await,
-        "new" | "news" => page_news(locale, "/news").await,
-        "search" => page_search(locale, "/search", query).await,
-        "item" => page_item(locale, "/item", query).await,
+        "" | "home" | "index" => page_news(locale, "/", user).await,
+        "new" | "news" => page_news(locale, "/news", user).await,
+        "search" => page_search(locale, "/search", query, user).await,
+        "item" => page_item(locale, "/item", query, user).await,
         endpoint => Ok(static_response(locale, endpoint).await),
     }
 }
 
-async fn page_news(locale: Locale, path: &str) -> Result<HttpResponse> {
-    let s = pages::News::new(locale, path)
+async fn page_news(locale: Locale, path: &str, user: Option<User>) -> Result<HttpResponse> {
+    let s = pages::News::new(locale, path, user)
         .render()
         .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -55,8 +58,9 @@ async fn page_item(
     locale: Locale,
     path: &str,
     query: web::Query<BTreeMap<String, String>>,
+    user: Option<User>,
 ) -> Result<HttpResponse> {
-    let s = pages::Item::new(locale, path, &query.into_inner())
+    let s = pages::Item::new(locale, path, &query.into_inner(), user)
         .render()
         .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -66,8 +70,9 @@ async fn page_search(
     locale: Locale,
     path: &str,
     query: web::Query<BTreeMap<String, String>>,
+    user: Option<User>,
 ) -> Result<HttpResponse> {
-    let s = pages::Search::new(locale, path, &query.into_inner())
+    let s = pages::Search::new(locale, path, &query.into_inner(), user)
         .render()
         .map_err(ErrorInternalServerError)?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))

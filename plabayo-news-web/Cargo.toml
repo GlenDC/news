@@ -20,6 +20,7 @@ not_found = "unknown"
 templates_dir = "pages/static"
 
 [dependencies]
+plabayo-news-data = { path = "../plabayo-news-data" }
 env_logger = "0"
 actix-web = "3"
 futures = "0"

@@ -23,9 +23,19 @@
     </nav>
     <nav id="site-nav-user">
         <ul class="nav-buttons">
-            <li class="{{ page.class_nav_button_for("/login") }}">
-                <a href="/login{{ page.page_query_for("/login", "") }}">{{ page.locale.strings().site.nav.header.login }}</a>
-            </li>
+            {% match page.user %}
+                {% when Some with (user) %}
+                    <li class="{{ page.class_nav_button_for("/user") }}">
+                        <a href="/user?id={{ user.id }}{{ page.page_query_for("/user", "id") }}">{{ user.public_username() }}</a>&nbsp;({{ user.karma }})
+                    </li>
+                    <li class="{{ page.class_nav_button_for("/logout") }}">
+                        <a href="/logout{{ page.page_query_for("/logout", "") }}">{{ page.locale.strings().site.nav.header.logout }}</a>
+                    </li>
+                {% when None %}
+                    <li class="{{ page.class_nav_button_for("/login") }}">
+                        <a href="/login{{ page.page_query_for("/login", "") }}">{{ page.locale.strings().site.nav.header.login }}</a>
+                    </li>
+            {% endmatch %}
         </ul>
     </nav>
 </header>

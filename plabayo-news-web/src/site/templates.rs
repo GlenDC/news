@@ -18,6 +18,8 @@ use std::collections::BTreeMap;
 
 use chrono::{DateTime, Utc};
 
+use plabayo_news_data::models::User;
+
 use crate::site::l18n::locales::Locale;
 
 pub struct PageState<'a> {
@@ -25,6 +27,7 @@ pub struct PageState<'a> {
     pub path: &'a str,
     pub query: Option<PageQuery<'a>>,
     pub gen_date_time: DateTime<Utc>,
+    pub user: Option<User>,
 }
 
 impl<'a> PageState<'a> {
@@ -32,12 +35,14 @@ impl<'a> PageState<'a> {
         locale: Locale,
         path: &'a str,
         query: Option<BTreeMap<&'a str, &'a str>>,
+        user: Option<User>,
     ) -> PageState<'a> {
         PageState {
             locale,
             path,
             query: query.map(|params| PageQuery { params }),
             gen_date_time: chrono::offset::Utc::now(),
+            user,
         }
     }
 
@@ -70,7 +75,7 @@ impl<'a> PageState<'a> {
             Some((key, value)) => format!("?{}={}", key, value),
         };
         for (key, value) in params_iter {
-            s.push_str(format!("?{}={}", key, value).as_str());
+            s.push_str(format!("&{}={}", key, value).as_str());
         }
         s
     }
@@ -104,8 +109,8 @@ pub mod pages {
     }
 
     impl<'a> News<'a> {
-        pub fn new(locale: Locale, path: &'a str) -> News<'a> {
-            let page = PageState::new(locale, path, None);
+        pub fn new(locale: Locale, path: &'a str, user: Option<User>) -> News<'a> {
+            let page = PageState::new(locale, path, None, user);
             News {
                 site_info: &SITE_INFO,
                 page,
@@ -126,6 +131,7 @@ pub mod pages {
             locale: Locale,
             path: &'a str,
             params: &'a BTreeMap<String, String>,
+            user: Option<User>,
         ) -> Item<'a> {
             let q = match params.get("q") {
                 Some(s) => s,
@@ -133,7 +139,7 @@ pub mod pages {
             };
             let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
             query.insert("q", q);
-            let page = PageState::new(locale, path, Some(query));
+            let page = PageState::new(locale, path, Some(query), user);
             Item {
                 site_info: &SITE_INFO,
                 q,
@@ -155,6 +161,7 @@ pub mod pages {
             locale: Locale,
             path: &'a str,
             params: &'a BTreeMap<String, String>,
+            user: Option<User>,
         ) -> Search<'a> {
             let q = match params.get("q") {
                 Some(s) => s,
@@ -162,7 +169,7 @@ pub mod pages {
             };
             let mut query: BTreeMap<&'a str, &'a str> = BTreeMap::new();
             query.insert("q", q);
-            let page = PageState::new(locale, path, Some(query));
+            let page = PageState::new(locale, path, Some(query), user);
             Search {
                 site_info: &SITE_INFO,
                 q,

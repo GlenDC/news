@@ -364,7 +364,8 @@ fn generate_pages_templates_mod(
         pub fn response_body(locale: Locale, path: &'a str, info: &'a SiteInfo) -> String {{
             {} {{
                 site_info: info,
-                page: PageState::new(locale, path, None),
+                // TODO: make userInfo not required for static pages at this point?!
+                page: PageState::new(locale, path, None, None),
             }}
             .render()
             .unwrap()

@@ -16,6 +16,7 @@ site:
       ask: "ask"
       submit: "submit"
       login: "login"
+      logout: "logout"
       locale: "language"
       select: "select"
     footer:

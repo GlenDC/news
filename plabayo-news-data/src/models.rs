@@ -92,6 +92,9 @@ pub struct User {
     /// An optional name of the user,
     /// this name is not validated but it should also follow the site's guidelines.
     pub name: Option<String>,
+    // An optional locale that can be set by the user,
+    // by default their browser-defined locale is used.
+    pub locale: Option<String>,
     /// An optional description of the user's location,
     /// could refer to a city, country, combination or other indicative description
     /// of the user's location.
@@ -118,6 +121,18 @@ pub struct User {
     pub authentications: Vec<Box<dyn UserAuthentication>>,
     /// Optional preferences that can be configured by the user.
     pub preferences: Option<UserPreferences>,
+}
+
+impl User {
+    pub fn public_username(&self) -> String {
+        match self.state {
+            UserState::Public => match &self.username {
+                Some(username) => username.clone(),
+                None => self.id.to_string(),
+            },
+            _ => self.id.to_string(),
+        }
+    }
 }
 
 /// The possible states a User can be in,
