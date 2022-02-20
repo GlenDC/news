@@ -38,14 +38,16 @@ pub struct I18n {
     pub locales: Vec<String>,
     pub path: String,
     pub out: String,
-    pub pages: StaticPages,
+    pub pages: Pages,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct StaticPages {
+pub struct Pages {
     pub path: String,
     pub not_found: String,
     pub templates_dir: String,
+    #[serde(rename = "static")]
+    pub static_pages: Vec<String>,
 }
 
 /// Load the i18n config from the package's Cargo.toml metadata.

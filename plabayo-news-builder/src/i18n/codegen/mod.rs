@@ -19,16 +19,20 @@ use std::path::Path;
 
 use anyhow::Result;
 
-use crate::i18n::config::StaticPages;
+use crate::i18n::config::Pages;
 use crate::i18n::locales::Storage;
 
 mod common;
 mod locales;
 mod pages;
 
-pub fn generate_all(dir: &str, storage: &Storage, pages: &StaticPages) -> Result<()> {
+pub fn generate_all(dir: &str, storage: &Storage, pages_cfg: &Pages) -> Result<()> {
     fs::create_dir_all(dir)?;
 
     locales::generate_locales(&Path::new(dir).join("locales.rs"), storage)?;
-    pages::generate_pages(&Path::new(dir).join("pages.rs"), storage, pages)
+
+
+    let pages_dir = Path::new(dir).join("pages");
+    fs::create_dir_all(&pages_dir)?;
+    pages::generate_pages(&pages_dir.join("generated.rs"), storage, pages_cfg)
 }

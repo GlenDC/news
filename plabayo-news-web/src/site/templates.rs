@@ -30,6 +30,11 @@ pub struct PageState<'a> {
     pub user: Option<User>,
 }
 
+pub struct Uri<'a> {
+    pub path: &'a str,
+    pub query: &'a BTreeMap<String, String>,
+}
+
 impl<'a> PageState<'a> {
     pub fn new(
         locale: Locale,
