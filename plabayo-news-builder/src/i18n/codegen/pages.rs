@@ -290,7 +290,7 @@ fn generate_pages_mod_docs(mut w: impl std::io::Write) -> Result<()> {
 fn generate_pages_imports(mut w: impl std::io::Write, dynamic_pages: &[String]) -> Result<()> {
     w.write_all(
         b"use actix_web::error::ErrorInternalServerError;
-use actix_web::{http::StatusCode, HttpResponse, Result};
+use actix_web::{HttpResponse, Result};
 use askama::Template;
 
 use crate::site::pages::PageState;

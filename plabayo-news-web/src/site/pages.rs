@@ -25,7 +25,7 @@ use plabayo_news_data::models::User;
 use crate::site::extractors::Session;
 use crate::site::l18n::locales::Locale;
 use crate::site::l18n::pages::{
-    static_response, ContentIndex, ContentItem, ContentSearch, PageIndex, PageItem, PageSearch,
+    static_response, ContentItem, ContentItems, ContentSearch, PageItem, PageItems, PageSearch,
 };
 
 pub fn factory() -> impl HttpServiceFactory + 'static {
@@ -108,13 +108,13 @@ async fn serve_page(
     let query = query.into_inner();
 
     match path.as_str() {
-        "" | "home" | "index" => PageIndex::new_response(
+        "" | "home" | "index" => PageItems::new_response(
             PageState::new(locale, "/".to_string(), query, user),
-            ContentIndex {},
+            ContentItems {},
         ),
-        "new" | "news" => PageIndex::new_response(
+        "new" | "news" => PageItems::new_response(
             PageState::new(locale, "/news".to_string(), query, user),
-            ContentIndex {},
+            ContentItems {},
         ),
         "search" => {
             let content = ContentSearch { q: "".to_string() };

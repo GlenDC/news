@@ -17,5 +17,5 @@
 mod generated;
 mod models;
 
-pub use generated::{is_static_root, static_response, PageIndex, PageItem, PageSearch};
-pub use models::{ContentIndex, ContentItem, ContentSearch};
+pub use generated::{is_static_root, static_response, PageItem, PageItems, PageSearch};
+pub use models::{ContentItem, ContentItems, ContentSearch};
