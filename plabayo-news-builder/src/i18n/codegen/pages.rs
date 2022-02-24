@@ -74,46 +74,6 @@ pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &Pages) -> Resul
 
     generate_dynamic_pages(&file, cfg.templates_dir.as_str(), &dynamic_pages[..])?;
 
-    // generate_pages_static_response(&file, &templates[..], not_found_template.as_str())
-    //     .with_context(|| {
-    //         format!(
-    //             "generate pages static response pub core API method in {}",
-    //             file_path.display()
-    //         )
-    //     })?;
-
-    // generate_pages_local_utility_functions(&file).with_context(|| {
-    //     format!(
-    //         "generate pages local utility functions in {}",
-    //         file_path.display()
-    //     )
-    // })?;
-
-    // generate_pages_is_static_root(&file, &templates[..], not_found_template.as_str())
-    //     .with_context(|| {
-    //         format!(
-    //             "generate pages 'is_static_root' pub utility {}",
-    //             file_path.display()
-    //         )
-    //     })?;
-
-    // generate_pages_static_pages(&file, storage, &templates[..], not_found_template.as_str())
-    //     .with_context(|| {
-    //         format!(
-    //             "generate pages static page functionality in {}",
-    //             file_path.display()
-    //         )
-    //     })?;
-
-    // generate_pages_templates_mod(&file, &templates[..], cfg.templates_dir.as_str()).with_context(
-    //     || {
-    //         format!(
-    //             "generate pages static page functionality in {}",
-    //             file_path.display()
-    //         )
-    //     },
-    // )?;
-
     Ok(())
 }
 
@@ -159,8 +119,8 @@ fn generate_static_pages(
     )?;
 
     w.write_all(
-        b"pub fn static_response<'a>(site_info: &'a SiteInfo, page: PageState<'a>) -> HttpResponse {
-    let s = (match endpoint {
+        b"pub fn static_response<'a>(endpoint: &str, page: PageState) -> Result<HttpResponse> {
+    let (mut response, render_result) = match endpoint {
 ",
     )?;
     for page in pages {
@@ -169,7 +129,7 @@ fn generate_static_pages(
         }
         w.write_all(
             format!(
-                "        PAGE_{}_ENDPOINT => Page{}::new(site_info, page),
+                "        PAGE_{}_ENDPOINT => (HttpResponse::Ok(), Page{}::new(page).render()),
 ",
                 page.to_case(Case::ScreamingSnake),
                 page.to_case(Case::Pascal)
@@ -179,7 +139,7 @@ fn generate_static_pages(
     }
     w.write_all(
         format!(
-            "        _ => Page{}::new(site_info, page),
+            "        _ => (HttpResponse::NotFound(), Page{}::new(page).render()),
 ",
             not_found.to_case(Case::Pascal)
         )
@@ -187,29 +147,39 @@ fn generate_static_pages(
     )?;
 
     w.write_all(
-        b"    })
-    .render()
-    .map_err(ErrorInternalServerError)?;
-    Ok(HttpResponse::Ok().content_type(\"text/html\").body(s))
+        b"    };
+    let s = render_result.map_err(ErrorInternalServerError)?;
+    Ok(response.content_type(\"text/html\").body(s))
 }
 
 ",
     )?;
 
     for page in pages {
+        if page != not_found {
+            w.write_all(
+                format!(
+                    "const PAGE_{page_upper}_ENDPOINT: &str = \"{page_snake}\";
+
+",
+                    page_upper = page.to_case(Case::ScreamingSnake),
+                    page_snake = page.to_case(Case::Snake)
+                )
+                .as_bytes(),
+            )?;
+        }
         w.write_all(
             format!(
-                "const PAGE_{page_upper}_ENDPOINT: &str = \"{page_snake}\";
-
-#[template(path = \"{dir}/{page_orig}.html\")]
+                "#[derive(Template)]
+#[template(path = \"{dir}/{page_orig}.html\", escape = \"none\")]
 struct Page{page}<'a> {{
     site_info: &'a SiteInfo,
-    page: PageState<'a>,
+    page: PageState,
 }}
 
 impl<'a> Page{page}<'a> {{
-    pub fn new(page: PageState<'a>) -> {page}<'a> {{
-        {page} {{
+    pub fn new(page: PageState) -> Page{page}<'a> {{
+        Page{page} {{
             site_info: &SITE_INFO,
             page,
         }}
@@ -217,8 +187,6 @@ impl<'a> Page{page}<'a> {{
 }}
 
 ",
-                page_upper = page.to_case(Case::ScreamingSnake),
-                page_snake = page.to_case(Case::Snake),
                 dir = templates_dir,
                 page_orig = &page,
                 page = page.to_case(Case::Pascal)
@@ -239,24 +207,24 @@ fn generate_dynamic_pages(
         b"//-------------------------------------
 //------- DYNAMIC PAGES
 //-------------------------------------
-
 ",
     )?;
 
     for page in pages {
         w.write_all(
             format!(
-                "#[derive(Template)]
+                "
+#[derive(Template)]
 #[template(path = \"{dir}/{page_orig}.html\")]
 pub struct Page{page}<'a> {{
     site_info: &'a SiteInfo,
-    page: PageState<'a>,
+    page: PageState,
     content: Content{page},
 }}
 
 impl<'a> Page{page}<'a> {{
-    pub fn new_response(page: PageState<'a>, content: Content{page}) -> Result<HttpResponse> {{
-        let page = {page} {{
+    pub fn new_response(page: PageState, content: Content{page}) -> Result<HttpResponse> {{
+        let page = Page{page} {{
             site_info: &SITE_INFO,
             page,
             content,
@@ -325,7 +293,7 @@ fn generate_pages_imports(mut w: impl std::io::Write, dynamic_pages: &[String]) 
 use actix_web::{http::StatusCode, HttpResponse, Result};
 use askama::Template;
 
-use crate::site::templates::PageState;
+use crate::site::pages::PageState;
 use crate::site::{assets, SiteInfo, SITE_INFO};
 
 use super::models::{",
