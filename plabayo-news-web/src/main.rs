@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use actix_web::{middleware, App, HttpServer};
+use actix_web::{middleware, web, App, HttpServer};
 
 use plabayo_news_web::site::middleware as pn_middleware;
+use plabayo_news_web::site::state::AppState;
 use plabayo_news_web::site::{assets, pages};
 
 #[actix_web::main]
@@ -24,9 +25,13 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
+    // create app state used by all routes
+    let state = web::Data::new(AppState::new());
+
     // start http server
     HttpServer::new(move || {
         App::new()
+            .app_data(state.clone())
             .wrap(middleware::Logger::default())
             .wrap(middleware::Compress::default())
             .wrap(pn_middleware::Cache::default())

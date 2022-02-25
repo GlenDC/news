@@ -14,16 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pub mod models;
-mod database;
+use plabayo_news_data::Database;
 
-pub use database::Database;
+#[derive(Clone, Copy)]
+pub struct AppState {
+    pub db: Database,
+}
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+impl AppState {
+    pub fn new() -> AppState {
+        AppState { db: Database {} }
     }
 }

@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pub struct ContentItems{}
+use plabayo_news_data::models::Item;
+
+pub struct ContentItems{
+    pub items: Vec<Item>,
+}
 
 pub struct ContentItem{
     pub q: String,

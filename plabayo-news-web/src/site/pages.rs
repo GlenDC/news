@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::collections::BTreeMap;
+use std::sync::Arc;
 
 use actix_web::dev::HttpServiceFactory;
 use actix_web::{web, HttpResponse, Result};
@@ -27,6 +28,7 @@ use crate::site::l18n::locales::Locale;
 use crate::site::l18n::pages::{
     static_response, ContentItem, ContentItems, ContentSearch, PageItem, PageItems, PageSearch,
 };
+use crate::site::state::AppState;
 
 //---------------------------------------
 // Actix Web Factory
@@ -118,13 +120,15 @@ async fn serve_page(
     path: web::Path<(String,)>,
     query: web::Query<BTreeMap<String, String>>,
     session: Session,
+    app_state: web::Data<AppState>,
 ) -> Result<HttpResponse> {
     let path = path.into_inner().0.to_lowercase();
     let query = query.into_inner();
+    let app_state = app_state.into_inner();
 
     match path.as_str() {
-        "" | "index" => serve_news_ranked("/", query, session).await,
-        "news" => serve_news_ranked("/news", query, session).await,
+        "" | "index" => serve_news_ranked("/", query, app_state, session).await,
+        "news" => serve_news_ranked("/news", query, app_state, session).await,
         "search" => serve_search("/search", query, session).await,
         "item" => serve_item("/item", query, session).await,
         _ => serve_static(path.as_str(), query, session),
@@ -134,12 +138,15 @@ async fn serve_page(
 async fn serve_news_ranked(
     path: &str,
     query: BTreeMap<String, String>,
+    app_state: Arc<AppState>,
     session: Session,
 ) -> Result<HttpResponse> {
     let locale = session.locale();
     let user = session.user();
 
-    let content = ContentItems {};
+    let content = ContentItems {
+        items: app_state.db.get_news_ranked().await,
+    };
 
     let page_state = PageState::new(locale, path.to_string(), query, user);
 

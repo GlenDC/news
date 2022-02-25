@@ -14,16 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pub mod models;
-mod database;
+use std::time::SystemTime;
 
-pub use database::Database;
+use crate::models::{Item, ItemState, ItemKind};
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+#[derive(Clone, Copy)]
+pub struct Database{}
+
+impl Database {
+    pub async fn get_news_ranked(&self) -> Vec<Item> {
+        vec![
+            Item{
+                id: 1,
+                state: ItemState::Alive,
+                kind: ItemKind::Story,
+                by: 100,
+                time: SystemTime::now(),
+                mod_time: SystemTime::now(),
+                votes: 42,
+                text: None,
+                parent: None,
+                kids: vec![],
+                url: Some("https://www.example.org/".to_owned()),
+                title: Some("an example news article".to_owned()),
+            },
+        ]
     }
 }

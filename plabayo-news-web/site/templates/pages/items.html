@@ -2,37 +2,21 @@
 
 {% block content %}
 <div class="posts">
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
-    {% include "layouts/post_summary.html" %}
+    {% for item in content.items %}
+    <article class="post">
+        <header class="post-title">
+            <a href="{{ item.url.as_ref().unwrap() }}"><h2>{{ item.title.as_ref().unwrap() }}</h2></a>
+            <a href="#">TODO</a>
+        </header>
+        <section class="post-info">
+            <ul class="nav-buttons clr-primary-fg-alt">
+                <li>{{ item.votes }} points {{ item.by }} (TODO: get actual user...) TODO(3 hours ago)</li>
+                <li>hide</li>
+                <li>{{ item.kids.len() }} comments</li>
+            </ul>
+        </section>
+    </article>
+    {% endfor %}
 </div>
 <nav class="posts-more">
     <a href="#">More</a>
