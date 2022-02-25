@@ -28,9 +28,17 @@ use crate::site::l18n::pages::{
     static_response, ContentItem, ContentItems, ContentSearch, PageItem, PageItems, PageSearch,
 };
 
+//---------------------------------------
+// Actix Web Factory
+//---------------------------------------
+
 pub fn factory() -> impl HttpServiceFactory + 'static {
     web::resource("/{resource:.*}").route(web::get().to(serve_page))
 }
+
+//---------------------------------------
+// Page State
+//---------------------------------------
 
 pub struct PageState {
     pub locale: Locale,
@@ -102,51 +110,92 @@ impl PageState {
     }
 }
 
-// TODO: refactor into a structure (Server)
-// which will have one public function and split up the news serving into
-// smaller methods (e.g. serve_news_ranked, etc...)
-
-// TODO(2): provide data source trait in /data package,
-// and use it within here to start to get data,
-// so we are working towards that structure already,
-// probably will require plenty of iterations on its own right
+//---------------------------------------
+// Serve Definitions
+//---------------------------------------
 
 async fn serve_page(
     path: web::Path<(String,)>,
     query: web::Query<BTreeMap<String, String>>,
     session: Session,
 ) -> Result<HttpResponse> {
-    let locale = session.locale();
-    let user = session.user();
     let path = path.into_inner().0.to_lowercase();
     let query = query.into_inner();
 
     match path.as_str() {
-        "" | "home" | "index" => PageItems::new_response(
-            PageState::new(locale, "/".to_string(), query, user),
-            ContentItems {},
-        ),
-        "new" | "news" => PageItems::new_response(
-            PageState::new(locale, "/news".to_string(), query, user),
-            ContentItems {},
-        ),
-        "search" => {
-            let content = ContentSearch { q: "".to_string() };
-            PageSearch::new_response(
-                PageState::new(locale, "/search".to_string(), query, user),
-                content,
-            )
-        }
-        "item" => {
-            let content = ContentItem { q: "".to_string() };
-            PageItem::new_response(
-                PageState::new(locale, "/item".to_string(), query, user),
-                content,
-            )
-        }
-        _ => static_response(
-            path.as_str(),
-            PageState::new(locale, format!("/{}", path), query, user),
-        ),
+        "" | "index" => serve_news_ranked("/", query, session).await,
+        "news" => serve_news_ranked("/news", query, session).await,
+        "search" => serve_search("/search", query, session).await,
+        "item" => serve_item("/item", query, session).await,
+        _ => serve_static(path.as_str(), query, session),
     }
 }
+
+async fn serve_news_ranked(
+    path: &str,
+    query: BTreeMap<String, String>,
+    session: Session,
+) -> Result<HttpResponse> {
+    let locale = session.locale();
+    let user = session.user();
+
+    let content = ContentItems {};
+
+    let page_state = PageState::new(locale, path.to_string(), query, user);
+
+    PageItems::new_response(page_state, content)
+}
+
+async fn serve_search(
+    path: &str,
+    query: BTreeMap<String, String>,
+    session: Session,
+) -> Result<HttpResponse> {
+    let locale = session.locale();
+    let user = session.user();
+
+    // TODO: sanitize?!
+    let q = query.get("q").map(|s| s.as_str()).unwrap_or("").to_string();
+
+    let content = ContentSearch { q };
+
+    let page_state = PageState::new(locale, path.to_string(), query, user);
+
+    PageSearch::new_response(page_state, content)
+}
+
+async fn serve_item(
+    path: &str,
+    query: BTreeMap<String, String>,
+    session: Session,
+) -> Result<HttpResponse> {
+    let locale = session.locale();
+    let user = session.user();
+
+    // TODO: sanitize?!
+    let q = query.get("q").map(|s| s.as_str()).unwrap_or("").to_string();
+
+    let content = ContentItem { q };
+
+    let page_state = PageState::new(locale, path.to_string(), query, user);
+
+    PageItem::new_response(page_state, content)
+}
+
+fn serve_static(
+    endpoint: &str,
+    query: BTreeMap<String, String>,
+    session: Session,
+) -> Result<HttpResponse> {
+    let locale = session.locale();
+    let user = session.user();
+
+    let page_state = PageState::new(locale, format!("/{}", endpoint), query, user);
+
+    static_response(endpoint, page_state)
+}
+
+// TODO(2): provide data source trait in /data package,
+// and use it within here to start to get data,
+// so we are working towards that structure already,
+// probably will require plenty of iterations on its own right

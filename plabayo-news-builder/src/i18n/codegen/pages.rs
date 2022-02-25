@@ -23,7 +23,6 @@ use itertools::Itertools;
 
 use crate::i18n::codegen::common::generate_copyright_file_header;
 use crate::i18n::config::Pages;
-use crate::i18n::locales::Storage;
 
 pub fn generate_pages(file_path: &Path, cfg: &Pages) -> Result<()> {
     println!("cargo:rerun-if-changed={}", cfg.path);
