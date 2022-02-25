@@ -17,5 +17,16 @@
 mod generated;
 mod models;
 
-pub use generated::{is_static_root, static_response, PageItem, PageItems, PageSearch};
+pub use generated::{static_response, PageItem, PageItems, PageSearch};
 pub use models::{ContentItem, ContentItems, ContentSearch};
+
+use crate::site::assets;
+
+pub fn page_max_cache_age_sec(root: &str) -> u32{
+    if root.to_lowercase().as_str() == assets::ROOT {
+        return 24*60*60
+    }
+    // do no cache at this level for dynamic content,
+    // not sure that granular level belongs on this layer either
+    return 0
+}

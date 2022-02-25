@@ -34,5 +34,5 @@ pub fn generate_all(dir: &str, storage: &Storage, pages_cfg: &Pages) -> Result<(
 
     let pages_dir = Path::new(dir).join("pages");
     fs::create_dir_all(&pages_dir)?;
-    pages::generate_pages(&pages_dir.join("generated.rs"), storage, pages_cfg)
+    pages::generate_pages(&pages_dir.join("generated.rs"), pages_cfg)
 }

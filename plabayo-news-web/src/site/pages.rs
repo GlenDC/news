@@ -40,6 +40,11 @@ pub struct PageState {
     pub user: Option<User>,
 }
 
+// TODO: clean up this mess, so we can use cleanly in html templates,
+//  e.g. instead of params_for, just provide a `query(&str)`,
+//  which will keep all queries there are already on path,
+//  and overwrite/add the (new) ones given.
+
 impl PageState {
     pub fn new(
         locale: Locale,
@@ -97,6 +102,15 @@ impl PageState {
     }
 }
 
+// TODO: refactor into a structure (Server)
+// which will have one public function and split up the news serving into
+// smaller methods (e.g. serve_news_ranked, etc...)
+
+// TODO(2): provide data source trait in /data package,
+// and use it within here to start to get data,
+// so we are working towards that structure already,
+// probably will require plenty of iterations on its own right
+
 async fn serve_page(
     path: web::Path<(String,)>,
     query: web::Query<BTreeMap<String, String>>,
@@ -130,7 +144,7 @@ async fn serve_page(
                 content,
             )
         }
-        endpoint => static_response(
+        _ => static_response(
             path.as_str(),
             PageState::new(locale, format!("/{}", path), query, user),
         ),

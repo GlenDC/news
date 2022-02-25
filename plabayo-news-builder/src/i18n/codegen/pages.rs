@@ -25,7 +25,7 @@ use crate::i18n::codegen::common::generate_copyright_file_header;
 use crate::i18n::config::Pages;
 use crate::i18n::locales::Storage;
 
-pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &Pages) -> Result<()> {
+pub fn generate_pages(file_path: &Path, cfg: &Pages) -> Result<()> {
     println!("cargo:rerun-if-changed={}", cfg.path);
 
     let file = File::create(file_path)
@@ -87,33 +87,6 @@ fn generate_static_pages(
         b"//-------------------------------------
 //------- STATIC PAGES
 //-------------------------------------
-
-",
-    )?;
-
-    w.write_all(
-        b"pub fn is_static_root(root: &str) -> bool {
-    matches!(
-        root.to_lowercase().as_str(),
-        assets::ROOT
-",
-    )?;
-    for page in pages {
-        if page.as_str() == not_found {
-            continue;
-        }
-        w.write_all(
-            format!(
-                "            | PAGE_{}_ENDPOINT
-",
-                page.to_case(Case::ScreamingSnake)
-            )
-            .as_bytes(),
-        )?
-    }
-    w.write_all(
-        b"    )
-}
 
 ",
     )?;
@@ -294,7 +267,7 @@ use actix_web::{HttpResponse, Result};
 use askama::Template;
 
 use crate::site::pages::PageState;
-use crate::site::{assets, SiteInfo, SITE_INFO};
+use crate::site::{SiteInfo, SITE_INFO};
 
 use super::models::{",
     )?;
