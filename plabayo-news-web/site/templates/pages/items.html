@@ -5,14 +5,25 @@
     {% for item in content.items %}
     <article class="post">
         <header class="post-title">
-            <a href="{{ item.url.as_ref().unwrap() }}"><h2>{{ item.title.as_ref().unwrap() }}</h2></a>
-            <a href="#">TODO</a>
+            {% match item.url %}
+                {% when Some with (url) %}
+                    <a href="{{ url.full }}">
+                        <h2>{{ item.title }}</h2>
+                    </a>
+                    <span><a href="/from?site={{ url.domain }}">({{ url.domain }})</a></span>
+                {% when None %}
+                    <a href="/item?id={{ item.id }}"><h2>{{ item.title }}</h2></a>
+            {% endmatch %}
         </header>
         <section class="post-info">
             <ul class="nav-buttons clr-primary-fg-alt">
-                <li>{{ item.votes }} points {{ item.by }} (TODO: get actual user...) TODO(3 hours ago)</li>
+                <li>{{ item.votes }} points <a href="/user?id={{ item.by_id }}">{{ item.by }}</a> {{ item.rel_time }}</li>
                 <li>hide</li>
-                <li>{{ item.kids.len() }} comments</li>
+                <li>
+                    <a href="/item?id={{ item.id }}">
+                        {{ item.comments.len() }} comments
+                    </a>
+                </li>
             </ul>
         </section>
     </article>

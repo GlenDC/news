@@ -25,9 +25,8 @@ use plabayo_news_data::models::User;
 
 use crate::site::extractors::Session;
 use crate::site::l18n::locales::Locale;
-use crate::site::l18n::pages::{
-    static_response, ContentItem, ContentItems, ContentSearch, PageItem, PageItems, PageSearch,
-};
+use crate::site::l18n::pages::models::{ContentItem, ContentItems, ContentSearch, Item};
+use crate::site::l18n::pages::{static_response, PageItem, PageItems, PageSearch};
 use crate::site::state::AppState;
 
 //---------------------------------------
@@ -145,7 +144,13 @@ async fn serve_news_ranked(
     let user = session.user();
 
     let content = ContentItems {
-        items: app_state.db.get_news_ranked().await,
+        items: app_state
+            .db
+            .get_news_ranked()
+            .await
+            .into_iter()
+            .map(|data| Item::from_data(data))
+            .collect(),
     };
 
     let page_state = PageState::new(locale, path.to_string(), query, user);

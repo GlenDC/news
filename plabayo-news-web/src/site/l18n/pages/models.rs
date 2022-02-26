@@ -14,16 +14,58 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use plabayo_news_data::models::Item;
+use plabayo_news_data::models;
 
-pub struct ContentItems{
+pub struct ContentItems {
     pub items: Vec<Item>,
 }
 
-pub struct ContentItem{
+pub struct ContentItem {
     pub q: String,
 }
 
-pub struct ContentSearch{
+pub struct ContentSearch {
     pub q: String,
+}
+
+pub struct Item {
+    pub id: models::ItemID,
+    pub hidden: bool,
+    pub modified: bool,
+    pub by: String,
+    pub by_id: models::UserID,
+    pub rel_time: String,
+    pub votes: i64,
+    pub title: String,
+    pub url: Option<Url>,
+    pub text: Option<String>,
+    pub comments: Vec<models::ItemID>, // TODO
+}
+
+pub struct Url {
+    pub full: String,
+    pub domain: String,
+}
+
+impl Item {
+    pub fn from_data(data: models::Item) -> Item {
+        Item {
+            id: data.id,
+            hidden: !matches!(data.state, models::ItemState::Alive),
+            modified: data.time < data.mod_time,
+            by: format!("user#{}", data.by), // TODO: actually fetch user
+            by_id: data.by,
+            rel_time: "4 hours ago".to_owned(), // actually calculate based on current time
+            votes: data.votes,
+            title: data.title.unwrap_or_default(),
+            url: data.url.and_then(|url| {
+                Some(Url {
+                    full: url,
+                    domain: "example.org".to_owned(), // TODO
+                })
+            }),
+            text: data.text,
+            comments: vec![],
+        }
+    }
 }
