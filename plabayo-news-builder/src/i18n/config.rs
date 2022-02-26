@@ -1,17 +1,3 @@
-use anyhow::Result;
-use serde::Deserialize;
-use toml;
-
-#[derive(Deserialize)]
-struct CargoConfig {
-    package: PackageConfig,
-}
-
-#[derive(Deserialize)]
-struct PackageConfig {
-    metadata: MetaDataConfig,
-}
-
 // Plabayo News
 // Copyright (C) 2021  Glen Henri J. De Cauwsemaecker
 //
@@ -27,6 +13,20 @@ struct PackageConfig {
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+use anyhow::Result;
+use serde::Deserialize;
+use toml;
+
+#[derive(Deserialize)]
+struct CargoConfig {
+    package: PackageConfig,
+}
+
+#[derive(Deserialize)]
+struct PackageConfig {
+    metadata: MetaDataConfig,
+}
 
 #[derive(Deserialize)]
 struct MetaDataConfig {
