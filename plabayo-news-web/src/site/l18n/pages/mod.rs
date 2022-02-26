@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-mod session;
+mod generated;
+pub mod models;
 
-pub use session::Session;
+pub use generated::{static_response, PageItem, PageItems, PageSearch};
+
+use crate::site::assets;
+
+pub fn page_max_cache_age_sec(root: &str) -> u32 {
+    if root.to_lowercase().as_str() == assets::ROOT {
+        return 24 * 60 * 60;
+    }
+    // do no cache at this level for dynamic content,
+    // not sure that granular level belongs on this layer either
+    0
+}

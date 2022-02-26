@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="posts">
+    {% for item in content.items %}
+    <article class="post">
+        <header class="post-title">
+            {% match item.url %}
+                {% when Some with (url) %}
+                    <a href="{{ url.full }}">
+                        <h2>{{ item.title }}</h2>
+                    </a>
+                    <span><a href="/from?site={{ url.domain }}">({{ url.domain }})</a></span>
+                {% when None %}
+                    <a href="/item?id={{ item.id }}"><h2>{{ item.title }}</h2></a>
+            {% endmatch %}
+        </header>
+        <section class="post-info">
+            <ul class="nav-buttons clr-primary-fg-alt">
+                <li>{{ item.votes }} points <a href="/user?id={{ item.by_id }}">{{ item.by }}</a> {{ item.rel_time }}</li>
+                <li>hide</li>
+                <li>
+                    <a href="/item?id={{ item.id }}">
+                        {{ item.comments.len() }} comments
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </article>
+    {% endfor %}
+</div>
+<nav class="posts-more">
+    <a href="#">More</a>
+</nav>
+{% endblock %}

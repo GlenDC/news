@@ -14,6 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-mod session;
+use plabayo_news_data::Database;
 
-pub use session::Session;
+#[derive(Clone, Copy)]
+pub struct AppState {
+    pub db: Database,
+}
+
+impl AppState {
+    pub fn new() -> AppState {
+        AppState { db: Database {} }
+    }
+}
+
+impl Default for AppState {
+    fn default() -> AppState {
+        AppState::new()
+    }
+}

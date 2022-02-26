@@ -15,12 +15,14 @@ path = "./site/locales"
 out = "./src/site/l18n"
 
 [package.metadata.i18n.pages]
-path = "./site/templates/pages/static"
+path = "./site/templates/pages"
 not_found = "unknown"
-templates_dir = "pages/static"
+templates_dir = "pages"
+static = ["api", "contribute", "faq", "guidelines", "security", "unknown"]
 
 [dependencies]
 plabayo-news-data = { path = "../plabayo-news-data" }
+structopt = "0"
 env_logger = "0"
 actix-web = "3"
 futures = "0"

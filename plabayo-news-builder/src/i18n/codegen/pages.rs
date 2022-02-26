@@ -19,12 +19,12 @@ use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
 use convert_case::{Case, Casing};
+use itertools::Itertools;
 
 use crate::i18n::codegen::common::generate_copyright_file_header;
-use crate::i18n::config::StaticPages;
-use crate::i18n::locales::Storage;
+use crate::i18n::config::Pages;
 
-pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &StaticPages) -> Result<()> {
+pub fn generate_pages(file_path: &Path, cfg: &Pages) -> Result<()> {
     println!("cargo:rerun-if-changed={}", cfg.path);
 
     let file = File::create(file_path)
@@ -47,48 +47,172 @@ pub fn generate_pages(file_path: &Path, storage: &Storage, cfg: &StaticPages) ->
         )
     })?;
 
-    generate_pages_imports(&file)
+    let (mut static_pages, mut dynamic_pages) =
+        templates
+            .into_iter()
+            .fold((vec![], vec![]), |(mut sp, mut dp), page| {
+                if cfg.static_pages.iter().any(|sp| sp == &page) {
+                    sp.push(page);
+                } else {
+                    dp.push(page);
+                }
+                (sp, dp)
+            });
+    static_pages.sort();
+    dynamic_pages.sort();
+
+    generate_pages_imports(&file, &dynamic_pages[..])
         .with_context(|| format!("generate pages imports in {}", file_path.display()))?;
 
-    generate_pages_static_response(&file, &templates[..], not_found_template.as_str())
-        .with_context(|| {
-            format!(
-                "generate pages static response pub core API method in {}",
-                file_path.display()
-            )
-        })?;
-
-    generate_pages_local_utility_functions(&file).with_context(|| {
-        format!(
-            "generate pages local utility functions in {}",
-            file_path.display()
-        )
-    })?;
-
-    generate_pages_is_static_root(&file, &templates[..], not_found_template.as_str())
-        .with_context(|| {
-            format!(
-                "generate pages 'is_static_root' pub utility {}",
-                file_path.display()
-            )
-        })?;
-
-    generate_pages_static_pages(&file, storage, &templates[..], not_found_template.as_str())
-        .with_context(|| {
-            format!(
-                "generate pages static page functionality in {}",
-                file_path.display()
-            )
-        })?;
-
-    generate_pages_templates_mod(&file, &templates[..], cfg.templates_dir.as_str()).with_context(
-        || {
-            format!(
-                "generate pages static page functionality in {}",
-                file_path.display()
-            )
-        },
+    generate_static_pages(
+        &file,
+        cfg.templates_dir.as_str(),
+        &static_pages[..],
+        not_found_template.as_str(),
     )?;
+
+    generate_dynamic_pages(&file, cfg.templates_dir.as_str(), &dynamic_pages[..])?;
+
+    Ok(())
+}
+
+fn generate_static_pages(
+    mut w: impl std::io::Write,
+    templates_dir: &str,
+    pages: &[String],
+    not_found: &str,
+) -> Result<()> {
+    w.write_all(
+        b"//-------------------------------------
+//------- STATIC PAGES
+//-------------------------------------
+
+",
+    )?;
+
+    w.write_all(
+        b"pub fn static_response(endpoint: &str, page: PageState) -> Result<HttpResponse> {
+    let (mut response, render_result) = match endpoint {
+",
+    )?;
+    for page in pages {
+        if page == not_found {
+            continue;
+        }
+        w.write_all(
+            format!(
+                "        PAGE_{}_ENDPOINT => (HttpResponse::Ok(), Page{}::new(page).render()),
+",
+                page.to_case(Case::ScreamingSnake),
+                page.to_case(Case::Pascal)
+            )
+            .as_bytes(),
+        )?;
+    }
+    w.write_all(
+        format!(
+            "        _ => (HttpResponse::NotFound(), Page{}::new(page).render()),
+",
+            not_found.to_case(Case::Pascal)
+        )
+        .as_bytes(),
+    )?;
+
+    w.write_all(
+        b"    };
+    let s = render_result.map_err(ErrorInternalServerError)?;
+    Ok(response.content_type(\"text/html\").body(s))
+}
+
+",
+    )?;
+
+    for page in pages {
+        if page != not_found {
+            w.write_all(
+                format!(
+                    "const PAGE_{page_upper}_ENDPOINT: &str = \"{page_snake}\";
+
+",
+                    page_upper = page.to_case(Case::ScreamingSnake),
+                    page_snake = page.to_case(Case::Snake)
+                )
+                .as_bytes(),
+            )?;
+        }
+        w.write_all(
+            format!(
+                "#[derive(Template)]
+#[template(path = \"{dir}/{page_orig}.html\", escape = \"none\")]
+struct Page{page}<'a> {{
+    site_info: &'a SiteInfo,
+    page: PageState,
+}}
+
+impl<'a> Page{page}<'a> {{
+    pub fn new(page: PageState) -> Page{page}<'a> {{
+        Page{page} {{
+            site_info: &SITE_INFO,
+            page,
+        }}
+    }}
+}}
+
+",
+                dir = templates_dir,
+                page_orig = &page,
+                page = page.to_case(Case::Pascal)
+            )
+            .as_bytes(),
+        )?;
+    }
+
+    Ok(())
+}
+
+fn generate_dynamic_pages(
+    mut w: impl std::io::Write,
+    templates_dir: &str,
+    pages: &[String],
+) -> Result<()> {
+    w.write_all(
+        b"//-------------------------------------
+//------- DYNAMIC PAGES
+//-------------------------------------
+",
+    )?;
+
+    for page in pages {
+        w.write_all(
+            format!(
+                "
+#[derive(Template)]
+#[template(path = \"{dir}/{page_orig}.html\")]
+pub struct Page{page}<'a> {{
+    site_info: &'a SiteInfo,
+    page: PageState,
+    content: Content{page},
+}}
+
+impl<'a> Page{page}<'a> {{
+    pub fn new_response(page: PageState, content: Content{page}) -> Result<HttpResponse> {{
+        let page = Page{page} {{
+            site_info: &SITE_INFO,
+            page,
+            content,
+        }};
+        let s = page.render().map_err(ErrorInternalServerError)?;
+        Ok(HttpResponse::Ok().content_type(\"text/html\").body(s))
+    }}
+}}
+",
+                dir = templates_dir,
+                page_orig = &page,
+                page = page.to_case(Case::Pascal)
+            )
+            .as_bytes(),
+        )?;
+    }
 
     Ok(())
 }
@@ -129,263 +253,34 @@ fn generate_pages_mod_docs(mut w: impl std::io::Write) -> Result<()> {
         b"//! this pages module is auto-generated by the plabayo-news-builder::i18n crate.
 //! DO NOT MODIFY MANUALLY AS IT WILL BE OVERWRITTEN NEXT TIME YOU BUILD USING CARGO!!!
 //! ... Best to also not check in this file into remote repo.
-",
-    )?;
-    Ok(())
-}
-
-fn generate_pages_imports(mut w: impl std::io::Write) -> Result<()> {
-    w.write_all(
-        b"use actix_web::{http::StatusCode, HttpResponse};
-use lazy_static::lazy_static;
-
-use crate::site::assets;
-use crate::site::l18n::locales::Locale;
-use crate::site::SITE_INFO;
 
 ",
     )?;
     Ok(())
 }
 
-fn generate_pages_static_response(
-    mut w: impl std::io::Write,
-    templates: &[String],
-    not_found: &str,
-) -> Result<()> {
+fn generate_pages_imports(mut w: impl std::io::Write, dynamic_pages: &[String]) -> Result<()> {
     w.write_all(
-        b"pub async fn static_response(locale: Locale, endpoint: &str) -> HttpResponse {
-    match endpoint {
-",
+        b"use actix_web::error::ErrorInternalServerError;
+use actix_web::{HttpResponse, Result};
+use askama::Template;
+
+use crate::site::pages::PageState;
+use crate::site::{SiteInfo, SITE_INFO};
+
+use super::models::{",
     )?;
-    for template in templates {
-        if template == not_found {
-            continue;
-        }
-        w.write_all(
-            format!(
-                "        PAGE_{}_ENDPOINT => static_page_{}(locale),
-",
-                template.to_case(Case::ScreamingSnake),
-                template.to_case(Case::Snake)
-            )
+    w.write_all(
+        dynamic_pages
+            .iter()
+            .map(|s| format!("Content{}", s.to_case(Case::Pascal)))
+            .join(", ")
             .as_bytes(),
-        )?;
-    }
-    w.write_all(
-        format!(
-            "        _ => static_page_{}(locale),
-",
-            not_found.to_case(Case::Snake)
-        )
-        .as_bytes(),
     )?;
-
     w.write_all(
-        b"    }
-}
+        b"};
 
 ",
     )?;
-
-    Ok(())
-}
-
-fn generate_pages_local_utility_functions(mut w: impl std::io::Write) -> Result<()> {
-    w.write_all(
-        b"fn static_page(status_code: StatusCode, body: &'static str) -> HttpResponse {
-    HttpResponse::build(status_code)
-        .content_type(\"text/html\")
-        .body(body)
-}
-
-",
-    )?;
-    Ok(())
-}
-
-fn generate_pages_static_pages(
-    mut w: impl std::io::Write,
-    storage: &Storage,
-    templates: &[String],
-    not_found: &str,
-) -> Result<()> {
-    for template in templates {
-        w.write_all(
-            format!(
-                "fn static_page_{}(locale: Locale) -> HttpResponse {{
-    static_page(
-        StatusCode::{},
-        match locale {{
-",
-                template.to_case(Case::Snake),
-                if template == not_found {
-                    "NOT_FOUND"
-                } else {
-                    "OK"
-                }
-            )
-            .as_bytes(),
-        )?;
-        for locale in storage.all_locales() {
-            w.write_all(
-                format!(
-                    "            Locale::{} => PAGE_{}_{}.as_str(),
-",
-                    locale.to_case(Case::Pascal),
-                    template.to_case(Case::ScreamingSnake),
-                    locale.to_case(Case::ScreamingSnake)
-                )
-                .as_bytes(),
-            )?;
-        }
-
-        w.write_all(
-            b"        },
-    )
-}
-
-",
-        )?;
-
-        if template != not_found {
-            w.write_all(
-                format!(
-                    r##"const PAGE_{}_ENDPOINT: &str = "{}";
-"##,
-                    template.to_case(Case::ScreamingSnake),
-                    template.to_case(Case::Kebab),
-                )
-                .as_bytes(),
-            )?;
-        }
-
-        w.write_all(
-            format!(
-                r##"const PAGE_{}_PATH: &str = "/{}";
-
-lazy_static! {{
-"##,
-                template.to_case(Case::ScreamingSnake),
-                template.to_case(Case::Kebab)
-            )
-            .as_bytes(),
-        )?;
-
-        for locale in storage.all_locales() {
-            w.write_all(
-                format!(
-                    r##"    static ref PAGE_{}_{}: String =
-        templates::{}::response_body(Locale::{}, PAGE_{}_PATH, &SITE_INFO);
-"##,
-                    template.to_case(Case::ScreamingSnake),
-                    locale.to_case(Case::ScreamingSnake),
-                    template.to_case(Case::Pascal),
-                    locale.to_case(Case::Pascal),
-                    template.to_case(Case::ScreamingSnake)
-                )
-                .as_bytes(),
-            )?;
-        }
-
-        w.write_all(
-            b"}
-
-",
-        )?;
-    }
-
-    Ok(())
-}
-
-fn generate_pages_is_static_root(
-    mut w: impl std::io::Write,
-    templates: &[String],
-    not_found: &str,
-) -> Result<()> {
-    w.write_all(
-        b"pub fn is_static_root(root: &str) -> bool {
-    matches!(
-        root.to_lowercase().as_str(),
-        assets::ROOT
-",
-    )?;
-    for template in templates {
-        if template.as_str() == not_found {
-            continue;
-        }
-        w.write_all(
-            format!(
-                "            | PAGE_{}_ENDPOINT
-",
-                template.to_case(Case::ScreamingSnake)
-            )
-            .as_bytes(),
-        )?
-    }
-    w.write_all(
-        b"    )
-}
-
-",
-    )?;
-
-    Ok(())
-}
-
-fn generate_pages_templates_mod(
-    mut w: impl std::io::Write,
-    templates: &[String],
-    templates_dir: &str,
-) -> Result<()> {
-    w.write_all(
-        b"mod templates {
-    use askama::Template;
-
-    use super::*;
-
-    use crate::site::templates::PageState;
-    use crate::site::SiteInfo;",
-    )?;
-
-    for template in templates {
-        w.write_all(
-            format!(
-                r##"
-
-    #[derive(Template)]
-    #[template(path = "{}/{}.html", escape = "none")]
-    pub struct {}<'a> {{
-        site_info: &'a SiteInfo,
-        page: PageState<'a>,
-    }}
-
-    impl<'a> {}<'a> {{
-        pub fn response_body(locale: Locale, path: &'a str, info: &'a SiteInfo) -> String {{
-            {} {{
-                site_info: info,
-                // TODO: make userInfo not required for static pages at this point?!
-                page: PageState::new(locale, path, None, None),
-            }}
-            .render()
-            .unwrap()
-        }}
-    }}"##,
-                templates_dir,
-                template,
-                template.to_case(Case::Pascal),
-                template.to_case(Case::Pascal),
-                template.to_case(Case::Pascal)
-            )
-            .as_bytes(),
-        )?;
-    }
-
-    w.write_all(
-        b"
-}
-",
-    )?;
-
     Ok(())
 }

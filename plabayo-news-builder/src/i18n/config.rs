@@ -1,17 +1,3 @@
-use anyhow::Result;
-use serde::Deserialize;
-use toml;
-
-#[derive(Deserialize)]
-struct CargoConfig {
-    package: PackageConfig,
-}
-
-#[derive(Deserialize)]
-struct PackageConfig {
-    metadata: MetaDataConfig,
-}
-
 // Plabayo News
 // Copyright (C) 2021  Glen Henri J. De Cauwsemaecker
 //
@@ -28,6 +14,20 @@ struct PackageConfig {
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+use anyhow::Result;
+use serde::Deserialize;
+use toml;
+
+#[derive(Deserialize)]
+struct CargoConfig {
+    package: PackageConfig,
+}
+
+#[derive(Deserialize)]
+struct PackageConfig {
+    metadata: MetaDataConfig,
+}
+
 #[derive(Deserialize)]
 struct MetaDataConfig {
     i18n: I18n,
@@ -38,14 +38,16 @@ pub struct I18n {
     pub locales: Vec<String>,
     pub path: String,
     pub out: String,
-    pub pages: StaticPages,
+    pub pages: Pages,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct StaticPages {
+pub struct Pages {
     pub path: String,
     pub not_found: String,
     pub templates_dir: String,
+    #[serde(rename = "static")]
+    pub static_pages: Vec<String>,
 }
 
 /// Load the i18n config from the package's Cargo.toml metadata.
