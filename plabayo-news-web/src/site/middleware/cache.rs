@@ -115,10 +115,7 @@ fn get_cache_control_directive_for_path(path: &str) -> CacheControl {
         Some(root) => {
             let max_age = pages::page_max_cache_age_sec(root);
             if max_age > 0 {
-                vec![
-                    CacheDirective::MaxAge(max_age),
-                    CacheDirective::Public,
-                ]
+                vec![CacheDirective::MaxAge(max_age), CacheDirective::Public]
             } else {
                 vec![CacheDirective::NoCache]
             }
