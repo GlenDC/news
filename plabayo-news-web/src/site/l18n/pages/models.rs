@@ -58,11 +58,9 @@ impl Item {
             rel_time: "4 hours ago".to_owned(), // actually calculate based on current time
             votes: data.votes,
             title: data.title.unwrap_or_default(),
-            url: data.url.and_then(|url| {
-                Some(Url {
-                    full: url,
-                    domain: "example.org".to_owned(), // TODO
-                })
+            url: data.url.map(|url| Url {
+                full: url,
+                domain: "example.org".to_owned(), // TODO
             }),
             text: data.text,
             comments: vec![],

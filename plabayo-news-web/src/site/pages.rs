@@ -149,7 +149,7 @@ async fn serve_news_ranked(
             .get_news_ranked()
             .await
             .into_iter()
-            .map(|data| Item::from_data(data))
+            .map(Item::from_data)
             .collect(),
     };
 

@@ -27,5 +27,5 @@ pub fn page_max_cache_age_sec(root: &str) -> u32 {
     }
     // do no cache at this level for dynamic content,
     // not sure that granular level belongs on this layer either
-    return 0;
+    0
 }

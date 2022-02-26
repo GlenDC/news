@@ -26,3 +26,9 @@ impl AppState {
         AppState { db: Database {} }
     }
 }
+
+impl Default for AppState {
+    fn default() -> AppState {
+        AppState::new()
+    }
+}

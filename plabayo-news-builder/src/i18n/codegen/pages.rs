@@ -91,7 +91,7 @@ fn generate_static_pages(
     )?;
 
     w.write_all(
-        b"pub fn static_response<'a>(endpoint: &str, page: PageState) -> Result<HttpResponse> {
+        b"pub fn static_response(endpoint: &str, page: PageState) -> Result<HttpResponse> {
     let (mut response, render_result) = match endpoint {
 ",
     )?;
