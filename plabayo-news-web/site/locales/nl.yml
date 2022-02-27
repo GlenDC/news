@@ -35,7 +35,5 @@ page:
         We proberen dan zo snel mogelijk te reageren (met correcties).
         Wanneer het door u vermelde beveiligslek is gedicht zal u worden
         vermeld op deze pagina om je te bedanken en eren voor deze eervolle onderneming.
-    reports:
-      format: md
-      value: >
+  
         Er zijn nog geen beveiligslekken gemeld aan ons.

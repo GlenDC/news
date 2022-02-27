@@ -97,6 +97,7 @@ pub fn generate_locales(file_path: &Path, storage: &Storage) -> Result<()> {
         .filter(|locale| locale != &storage.default_locale())
     {
         let iter = LocaleStringWithDefaultIter::new(
+            locale.to_owned(),
             storage
                 .get(locale)
                 .ok_or_else(|| anyhow!("failed to get strings for locale {}", locale))?
@@ -524,6 +525,7 @@ struct LocaleStringWithDefaultIter<
     T: Iterator<Item = StringValuePathPair>,
     U: Iterator<Item = StringValuePathPair>,
 > {
+    locale: String,
     pairs: Box<T>,
     default_pairs: Box<U>,
     next_pair: Option<StringValuePathPair>,
@@ -533,9 +535,14 @@ struct LocaleStringWithDefaultIter<
 impl<T: Iterator<Item = StringValuePathPair>, U: Iterator<Item = StringValuePathPair>>
     LocaleStringWithDefaultIter<T, U>
 {
-    pub fn new(pairs: T, mut default_pairs: U) -> LocaleStringWithDefaultIter<T, U> {
+    pub fn new(
+        locale: String,
+        pairs: T,
+        mut default_pairs: U,
+    ) -> LocaleStringWithDefaultIter<T, U> {
         let next_default_pair = default_pairs.next();
         LocaleStringWithDefaultIter {
+            locale,
             pairs: Box::new(pairs),
             default_pairs: Box::new(default_pairs),
             next_pair: None,
@@ -572,16 +579,20 @@ impl<T: Iterator<Item = StringValuePathPair>, U: Iterator<Item = StringValuePath
                         None => {
                             // missing keys, we'll fill up...
                             self.next_default_pair = self.default_pairs.next();
+                            let value = format!(
+                                "STRINGS_DEFAULT.{}",
+                                next_default_pair
+                                    .path
+                                    .iter()
+                                    .map(|s| s.to_case(Case::Snake))
+                                    .join("."),
+                            );
+                            eprintln!(
+                                "plabayo-news_builder: missing string for locale {locale}, resolved by using fallback: {value}; Please add the translated string to {locale}.yml!",
+                                value=value, locale=self.locale);
                             return Some(StringValuePathPair {
-                                path: next_default_pair.path.clone(),
-                                value: format!(
-                                    "STRINGS_DEFAULT.{}",
-                                    next_default_pair
-                                        .path
-                                        .iter()
-                                        .map(|s| s.to_case(Case::Snake))
-                                        .join("."),
-                                ),
+                                path: next_default_pair.path,
+                                value,
                             });
                         }
                     };
@@ -590,7 +601,7 @@ impl<T: Iterator<Item = StringValuePathPair>, U: Iterator<Item = StringValuePath
                     if pair == next_default_pair {
                         self.next_default_pair = self.default_pairs.next();
                         return Some(StringValuePathPair {
-                            path: pair.path.clone(),
+                            path: pair.path,
                             value: format!(
                                 r#################"r################"{}"################"#################,
                                 pair.value
@@ -600,6 +611,14 @@ impl<T: Iterator<Item = StringValuePathPair>, U: Iterator<Item = StringValuePath
                     // in case we have not yet reached the current next default pair,
                     // we want to skip the current pair, as it is a non-standard one
                     if pair < next_default_pair {
+                        let value = format!(
+                            "STRINGS_{}.{}",
+                            self.locale.to_case(Case::ScreamingSnake),
+                            pair.path.iter().map(|s| s.to_case(Case::Snake)).join("."),
+                        );
+                        eprintln!(
+                            "plabayo-news_builder: skipping string '{value}' for locale {locale}: it is not found in default locale; Please remove this string from {locale}.yml!",
+                            value=value, locale=self.locale);
                         continue;
                     }
                     // our next pair is already beyond the next desired property path,
@@ -607,16 +626,20 @@ impl<T: Iterator<Item = StringValuePathPair>, U: Iterator<Item = StringValuePath
                     self.next_default_pair = self.default_pairs.next();
                     // keep our fetched pair for next time
                     self.next_pair = Some(pair);
+                    let value = format!(
+                        "STRINGS_DEFAULT.{}",
+                        next_default_pair
+                            .path
+                            .iter()
+                            .map(|s| s.to_case(Case::Snake))
+                            .join("."),
+                    );
+                    eprintln!(
+                        "plabayo-news_builder: missing string for locale {locale}, resolved by using fallback: {value}; Please add the translated string to {locale}.yml!",
+                        value=value, locale=self.locale);
                     return Some(StringValuePathPair {
-                        path: next_default_pair.path.clone(),
-                        value: format!(
-                            "STRINGS_DEFAULT.{}",
-                            next_default_pair
-                                .path
-                                .iter()
-                                .map(|s| s.to_case(Case::Snake))
-                                .join("."),
-                        ),
+                        path: next_default_pair.path,
+                        value,
                     });
                 }
             }

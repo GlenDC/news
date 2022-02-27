@@ -37,7 +37,7 @@ page:
       value: |
           # Plabayo News API
 
-          We're planning to have a first alpha release ready of a read-only API
+          We're planning to have a first alpha release ready of our read-only API
           with access to _all public content_ of Plabayo News, meaning all
           submissions, comments and public profiles.
 
