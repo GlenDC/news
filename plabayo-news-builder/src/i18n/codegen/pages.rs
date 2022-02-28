@@ -187,7 +187,7 @@ fn generate_dynamic_pages(
             format!(
                 "
 #[derive(Template)]
-#[template(path = \"{dir}/{page_orig}.html\")]
+#[template(path = \"{dir}/{page_orig}.html\", escape = \"none\")]
 pub struct Page{page}<'a> {{
     site_info: &'a SiteInfo,
     page: PageState,
