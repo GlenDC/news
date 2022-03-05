@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use actix_web_static_files::resource_dir;
 use anyhow::Result;
 use vergen::{vergen, Config};
 
@@ -27,10 +26,6 @@ fn main() -> Result<()> {
     // build the i18n locale structs and (Askama) templates
     // for the website's static pages.
     i18n::build("./Cargo.toml")?;
-
-    // Bundle static resources so we can serve these from memory,
-    // and make the setup of the news web server easier.
-    resource_dir("./site/assets").build()?;
 
     // All good.
     Ok(())

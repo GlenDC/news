@@ -14,16 +14,53 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use actix_web_static_files;
-
-// include generated (assets) resource files
-include!(concat!(env!("OUT_DIR"), "/generated.rs"));
-
-use actix_web::dev::HttpServiceFactory;
+use axum::{
+    body::{boxed, Full},
+    http::{header, StatusCode, Uri},
+    response::{IntoResponse, Response},
+};
+use rust_embed::RustEmbed;
 
 pub const ROOT: &str = "assets";
+pub const ROUTE: &str = "/assets/*file";
 
-pub fn factory() -> impl HttpServiceFactory + 'static {
-    let generated = generate();
-    actix_web_static_files::ResourceFiles::new(format!("/{}", ROOT).as_str(), generated)
+const PREFIX: &str = "assets/";
+
+pub async fn handler(uri: Uri) -> impl IntoResponse {
+    let mut path = uri.path().trim_start_matches('/').to_string();
+    if path.starts_with(PREFIX) {
+        path = path.replace(PREFIX, "");
+    }
+    StaticFile(path)
+}
+
+#[derive(RustEmbed)]
+#[folder = "site/assets"]
+struct Asset;
+
+pub struct StaticFile<T>(pub T);
+
+impl<T> IntoResponse for StaticFile<T>
+where
+    T: Into<String>,
+{
+    fn into_response(self) -> Response {
+        let path = self.0.into();
+
+        match Asset::get(path.as_str()) {
+            Some(content) => {
+                let body = boxed(Full::from(content.data));
+                let mime = mime_guess::from_path(path).first_or_octet_stream();
+                Response::builder()
+                    .header(header::CONTENT_TYPE, mime.as_ref())
+                    .body(body)
+                    .unwrap()
+            }
+            // TODO: integrate actual 404 page...
+            None => Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(boxed(Full::from("404")))
+                .unwrap(),
+        }
+    }
 }

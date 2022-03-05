@@ -14,13 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use actix_web::{middleware, web, App, HttpServer};
+// use actix_web::{middleware, web, App, HttpServer};
 use anyhow::{Context, Result};
+use axum::{handler::Handler, routing::get, Router};
 use structopt::StructOpt;
+use tower_http::trace::TraceLayer;
 
-use plabayo_news_web::site::middleware as pn_middleware;
-use plabayo_news_web::site::state::AppState;
-use plabayo_news_web::site::{assets, pages};
+// use plabayo_news_web::site::middleware as pn_middleware;
+// use plabayo_news_web::site::state::AppState;
+// use plabayo_news_web::site::{assets, pages};
+
+use plabayo_news_web::site::assets;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "plabayo-news-web")]
@@ -34,43 +38,83 @@ struct Opt {
     interface: String,
 }
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> Result<()> {
     let opt = Opt::from_args();
 
-    if opt.debug {
-        std::env::set_var("RUST_LOG", "actix_web=info");
-    } else {
-        std::env::set_var("RUST_LOG", "actix_web=error");
+    // Set the RUST_LOG, if it hasn't been explicitly defined
+    if std::env::var_os("RUST_LOG").is_none() {
+        if opt.debug {
+            std::env::set_var("RUST_LOG", "plabayo_news_web=debug,tower_http=debug")
+        } else {
+            std::env::set_var("RUST_LOG", "plabayo_news_web=warn,tower_http=warn")
+        }
     }
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
-    // create app state used by all routes
-    let state = web::Data::new(AppState::new());
+    // build our application with a single route
+    let app = Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+        .route(assets::ROUTE, assets::handler.into_service())
+        .layer(TraceLayer::new_for_http());
 
-    // start http server
-    HttpServer::new(move || {
-        App::new()
-            .app_data(state.clone())
-            .wrap(middleware::Logger::default())
-            .wrap(middleware::Compress::default())
-            .wrap(pn_middleware::Cache::default())
-            .wrap(pn_middleware::SiteInfo::default())
-            .wrap(middleware::NormalizePath::new(
-                middleware::normalize::TrailingSlash::Trim,
-            ))
-            .service(assets::factory())
-            .service(pages::factory())
-    })
-    .bind(&opt.interface)
-    .with_context(|| {
+    // run it with hyper on localhost:3000
+    let socket_addr = opt.interface.parse().with_context(|| {
         format!(
-            "bind Plabayo News HTTPServer to interface: {}",
+            "parse Plabayo News HTTPServer socket address from interface: {}",
             opt.interface
         )
-    })?
-    .run()
-    .await?;
+    })?;
+    axum::Server::bind(&socket_addr)
+        .serve(app.into_make_service())
+        .await
+        .with_context(|| {
+            format!(
+                "run Plabayo News HTTPServer on interface: {}",
+                opt.interface
+            )
+        })?;
 
     Ok(())
 }
+
+// #[actix_web::main]
+// async fn main() -> Result<()> {
+//     let opt = Opt::from_args();
+
+//     if opt.debug {
+//         std::env::set_var("RUST_LOG", "actix_web=info");
+//     } else {
+//         std::env::set_var("RUST_LOG", "actix_web=error");
+//     }
+//     env_logger::init();
+
+//     // create app state used by all routes
+//     let state = web::Data::new(AppState::new());
+
+//     // start http server
+//     HttpServer::new(move || {
+//         App::new()
+//             .app_data(state.clone())
+//             .wrap(middleware::Logger::default())
+//             .wrap(middleware::Compress::default())
+//             .wrap(pn_middleware::Cache::default())
+//             .wrap(pn_middleware::SiteInfo::default())
+//             .wrap(middleware::NormalizePath::new(
+//                 middleware::normalize::TrailingSlash::Trim,
+//             ))
+//             .service(assets::factory())
+//             .service(pages::factory())
+//     })
+//     .bind(&opt.interface)
+//     .with_context(|| {
+//         format!(
+//             "bind Plabayo News HTTPServer to interface: {}",
+//             opt.interface
+//         )
+//     })?
+//     .run()
+//     .await?;
+
+//     Ok(())
+// }
